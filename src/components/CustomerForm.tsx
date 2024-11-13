@@ -14,7 +14,7 @@ interface CustomerFormProps {
 }
 
 export default function CustomerForm({ preselectedLocation, onSuccess }: CustomerFormProps) {
-  const [formData, setFormData] = useState<Omit<Customer, 'id' | 'created_at'>>({
+  const [formData, setFormData] = useState<Omit<Customer, 'id' | 'created_at' | 'storageLocation'>>({
     name: "",
     licensePlate: "",
     summerTireSize: "",
@@ -37,8 +37,7 @@ export default function CustomerForm({ preselectedLocation, onSuccess }: Custome
     
     try {
       const customerData = {
-        ...formData,
-        storageLocation: preselectedLocation
+        ...formData
       };
       
       const customer = await createCustomer(customerData);

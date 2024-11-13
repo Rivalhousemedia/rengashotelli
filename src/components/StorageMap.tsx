@@ -107,6 +107,11 @@ export default function StorageMap({ selectedCustomer, onLocationSelect }: Stora
     });
   };
 
+  const handlePrintQRCode = (hotel: number, section: string, shelf: number) => {
+    // Print functionality will be handled by the StorageHotel component
+    console.log("Print QR code for location:", hotel, section, shelf);
+  };
+
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -120,6 +125,7 @@ export default function StorageMap({ selectedCustomer, onLocationSelect }: Stora
             onLocationSelect={handleLocationClick}
             getCustomerAtLocation={getCustomerAtLocation}
             handleRemoveCustomer={removeFromLocation.mutate}
+            handlePrintQRCode={handlePrintQRCode}
           />
         ))}
       </div>
