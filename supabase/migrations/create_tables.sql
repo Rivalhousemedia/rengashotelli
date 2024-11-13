@@ -1,3 +1,7 @@
+-- First drop existing tables if they exist (in reverse order of creation to handle foreign keys)
+DROP TABLE IF EXISTS storage_locations CASCADE;
+DROP TABLE IF EXISTS customers CASCADE;
+
 -- Create customers table first since it's referenced by storage_locations
 CREATE TABLE customers (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
