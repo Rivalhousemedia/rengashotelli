@@ -27,24 +27,28 @@ export default function CustomerSearchDialog({
   const [isSearching, setIsSearching] = useState(false);
 
   const handleSearch = async (query: string) => {
+    console.log("=== Search Debug Start ===");
+    console.log("Search triggered with query:", query);
+    
     if (query.length < 1) {
+      console.log("Query too short, clearing results");
       setSearchResults([]);
       return;
     }
     
     setIsSearching(true);
     try {
-      console.log("Starting search with query:", query);
+      console.log("Calling searchCustomers API with query:", query);
       const results = await searchCustomers(query);
-      console.log("API returned results:", results);
+      console.log("Raw API results:", results);
       
       // Debug each result's storage location
       results.forEach((customer, index) => {
-        console.log(`Customer ${index + 1}:`, {
-          name: customer.name,
+        console.log(`Customer ${index + 1} (${customer.name}):`, {
           id: customer.id,
           hasStorageLocation: !!customer.storageLocation,
-          storageLocation: customer.storageLocation
+          storageLocation: customer.storageLocation,
+          rawCustomer: customer
         });
       });
       
@@ -53,18 +57,21 @@ export default function CustomerSearchDialog({
         const hasNoLocation = !customer.storageLocation;
         console.log(`Filtering ${customer.name}:`, {
           hasNoLocation,
-          storageLocationValue: customer.storageLocation
+          storageLocationValue: customer.storageLocation,
+          willBeIncluded: hasNoLocation
         });
         return hasNoLocation;
       });
       
       console.log("Final filtered customers:", availableCustomers);
+      console.log("Setting search results to:", availableCustomers);
       setSearchResults(availableCustomers);
     } catch (error) {
       console.error('Search error:', error);
       toast.error("Asiakkaiden haku epäonnistui");
     } finally {
       setIsSearching(false);
+      console.log("=== Search Debug End ===");
     }
   };
 
