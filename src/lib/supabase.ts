@@ -125,11 +125,17 @@ export async function assignStorageLocation(
     return null;
   }
 
-  const { data: existingLocation } = await supabase
+  const { data: existingLocations, error: queryError } = await supabase
     .from('storage_locations')
     .select('*')
-    .eq('customer_id', customerId)
-    .single();
+    .eq('customer_id', customerId);
+
+  if (queryError) {
+    console.error('Error checking existing location:', queryError);
+    throw queryError;
+  }
+
+  const existingLocation = existingLocations?.[0];
 
   if (existingLocation) {
     const { data: locationData, error: locationError } = await supabase
