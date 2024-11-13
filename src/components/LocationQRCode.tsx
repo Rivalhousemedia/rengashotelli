@@ -3,15 +3,14 @@ import { QRCodeSVG } from "qrcode.react";
 interface LocationQRCodeProps {
   hotel: number;
   section: string;
-  shelf: number;
+  shelf: number | string;
 }
 
 export default function LocationQRCode({ hotel, section, shelf }: LocationQRCodeProps) {
   // Ensure all values are defined and valid before creating the location code
   if (!hotel || !section || !shelf || 
       typeof hotel !== 'number' || 
-      typeof section !== 'string' || 
-      typeof shelf !== 'number') {
+      typeof section !== 'string') {
     console.error("LocationQRCode - Invalid or missing props:", { hotel, section, shelf });
     return null;
   }
