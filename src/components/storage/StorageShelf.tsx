@@ -98,12 +98,15 @@ export default function StorageShelf({
                     variant="ghost" 
                     size="icon"
                     className="h-6 w-6"
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                    }}
                   >
                     <Printer className="h-4 w-4" />
                   </Button>
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent onClick={(e) => e.stopPropagation()}>
                   <div id={`location-qr-${hotel}-${section}-${shelf}`}>
                     <LocationQRCode 
                       hotel={hotel} 
