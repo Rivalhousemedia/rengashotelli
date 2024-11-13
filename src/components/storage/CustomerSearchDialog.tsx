@@ -35,8 +35,14 @@ export default function CustomerSearchDialog({
     setIsSearching(true);
     try {
       const results = await searchCustomers(query);
-      // Filter out customers that already have a storage location
-      const availableCustomers = results.filter(customer => !customer.storageLocation);
+      // Only filter out customers that have an active storage location
+      const availableCustomers = results.filter(customer => 
+        !customer.storageLocation || 
+        customer.storageLocation.hotel === null || 
+        customer.storageLocation.section === null || 
+        customer.storageLocation.shelf === null
+      );
+      console.log("Search results:", results);
       console.log("Available customers:", availableCustomers);
       setSearchResults(availableCustomers);
     } catch (error) {
