@@ -6,17 +6,15 @@ export default function Navigation() {
     <nav className="bg-gray-900/50 backdrop-blur-sm border-b border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          <div className="flex items-center">
-            <Link to="/" className="text-white font-bold text-xl">
-              Tire Storage
-            </Link>
-          </div>
-          <div className="flex items-center">
+          <div className="flex items-center space-x-4">
             <img 
               src="/rengaspalvelu-logo.png" 
               alt="Rengaspalvelu" 
-              className="h-8 mr-4"
+              className="h-8"
             />
+            <Link to="/" className="text-white font-bold text-xl">
+              Tire Storage
+            </Link>
           </div>
         </div>
       </div>
