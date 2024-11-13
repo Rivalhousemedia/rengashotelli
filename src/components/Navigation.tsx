@@ -12,9 +12,7 @@ export default function Navigation() {
               alt="Rengaspalvelu" 
               className="h-8"
             />
-            <Link to="/" className="text-white font-bold text-xl">
-              Tire Storage
-            </Link>
+            {/* Removed the text "Tire Storage" */}
           </div>
         </div>
       </div>
