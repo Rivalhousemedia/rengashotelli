@@ -36,7 +36,12 @@ export default function CustomerForm({ preselectedLocation, onSuccess }: Custome
     setIsLoading(true);
     
     try {
-      const customer = await createCustomer(formData);
+      const customerData = {
+        ...formData,
+        storageLocation: preselectedLocation
+      };
+      
+      const customer = await createCustomer(customerData);
       console.log("Saved customer data:", customer);
       toast.success("Asiakkaan tiedot tallennettu!");
       setSavedCustomer(customer);
