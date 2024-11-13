@@ -16,7 +16,7 @@ export default function QRCode({ customer, selectedLocation }: { customer: Custo
         <div className="space-y-1">
           <p className="font-bold text-2xl text-black">{customer.name}</p>
           <p className="text-lg text-gray-600">{customer.licensePlate}</p>
-          <p className="text-sm text-gray-600">{selectedLocation || 'Not assigned'}</p>
+          <p className="text-xl font-bold text-gray-600">{selectedLocation || 'Not assigned'}</p>
         </div>
         <QRCodeSVG value={qrData} size={100} />
       </div>
