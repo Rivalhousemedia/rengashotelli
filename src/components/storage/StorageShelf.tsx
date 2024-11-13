@@ -33,7 +33,7 @@ export default function StorageShelf({
   const locationCode = `H${hotel}-${section}-${shelf}`;
 
   const handlePrintCustomerQR = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent event from bubbling up
+    e.stopPropagation();
     const printWindow = window.open('', '_blank');
     if (printWindow && customer) {
       printWindow.document.write(`
@@ -72,7 +72,7 @@ export default function StorageShelf({
   };
 
   const handleLocationPrint = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent event from bubbling up
+    e.stopPropagation();
     onPrintQRCode(hotel, section, shelf);
   };
 
@@ -100,13 +100,12 @@ export default function StorageShelf({
                     className="h-6 w-6"
                     onClick={(e) => {
                       e.stopPropagation();
-                      e.preventDefault();
                     }}
                   >
                     <Printer className="h-4 w-4" />
                   </Button>
                 </DialogTrigger>
-                <DialogContent onClick={(e) => e.stopPropagation()}>
+                <DialogContent>
                   <div id={`location-qr-${hotel}-${section}-${shelf}`}>
                     <LocationQRCode 
                       hotel={hotel} 
