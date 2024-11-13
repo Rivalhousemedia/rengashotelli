@@ -7,6 +7,16 @@ import { createCustomer } from "@/lib/supabase";
 import QRCode from "./QRCode";
 import { Customer } from "@/lib/types";
 import StorageMap from "./StorageMap";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+// Generate tire sizes from 16 to 24 inches
+const tireSizes = Array.from({ length: 9 }, (_, i) => `${i + 16}"`);
 
 export default function CustomerForm() {
   const [formData, setFormData] = useState<Omit<Customer, 'id' | 'created_at'>>({
@@ -73,24 +83,42 @@ export default function CustomerForm() {
         
         <div className="space-y-2">
           <Label htmlFor="summerTireSize">Summer Tire Size</Label>
-          <Input
-            id="summerTireSize"
+          <Select
             value={formData.summerTireSize}
-            onChange={(e) => setFormData({ ...formData, summerTireSize: e.target.value })}
+            onValueChange={(value) => setFormData({ ...formData, summerTireSize: value })}
             required
-            className="bg-gray-800/30 border-gray-700 focus:bg-gray-800/30 hover:bg-gray-800/50 text-gray-300"
-          />
+          >
+            <SelectTrigger className="bg-gray-800/30 border-gray-700 focus:bg-gray-800/30 hover:bg-gray-800/50 text-gray-300">
+              <SelectValue placeholder="Select tire size" />
+            </SelectTrigger>
+            <SelectContent>
+              {tireSizes.map((size) => (
+                <SelectItem key={size} value={size}>
+                  {size}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="winterTireSize">Winter Tire Size</Label>
-          <Input
-            id="winterTireSize"
+          <Select
             value={formData.winterTireSize}
-            onChange={(e) => setFormData({ ...formData, winterTireSize: e.target.value })}
+            onValueChange={(value) => setFormData({ ...formData, winterTireSize: value })}
             required
-            className="bg-gray-800/30 border-gray-700 focus:bg-gray-800/30 hover:bg-gray-800/50 text-gray-300"
-          />
+          >
+            <SelectTrigger className="bg-gray-800/30 border-gray-700 focus:bg-gray-800/30 hover:bg-gray-800/50 text-gray-300">
+              <SelectValue placeholder="Select tire size" />
+            </SelectTrigger>
+            <SelectContent>
+              {tireSizes.map((size) => (
+                <SelectItem key={size} value={size}>
+                  {size}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="space-y-2">
