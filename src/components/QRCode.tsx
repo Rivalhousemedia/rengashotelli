@@ -12,7 +12,6 @@ export default function QRCode({ customer, selectedLocation }: { customer: Custo
   });
 
   const getTireInfo = () => {
-    console.log("Tire sizes:", customer.summerTireSize, customer.winterTireSize); // Debug log
     if (customer.summerTireSize && customer.summerTireSize.length > 0) {
       return `Summer tires ${customer.summerTireSize}`;
     }
