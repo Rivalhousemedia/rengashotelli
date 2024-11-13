@@ -1,14 +1,8 @@
-import { Card } from "@/components/ui/card";
 import type { StorageLocation, Customer } from "@/lib/types";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getCustomersWithLocations, assignStorageLocation } from "@/lib/api/storageApi";
 import { toast } from "sonner";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import LocationQRCode from "./LocationQRCode";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Printer } from "lucide-react";
+import StorageHotel from "./storage/StorageHotel";
 
 interface StorageMapProps {
   selectedCustomer?: Customer;
@@ -59,10 +53,6 @@ export default function StorageMap({ selectedCustomer, onLocationSelect }: Stora
       customer.storageLocation?.section === section &&
       customer.storageLocation?.shelf === shelf.toString()
     );
-  };
-
-  const formatLocationCode = (hotel: number, section: string, shelf: number) => {
-    return `H${hotel}-${section}-${shelf}`;
   };
 
   const handleLocationClick = async (hotel: number, section: string, shelf: number) => {
@@ -124,117 +114,19 @@ export default function StorageMap({ selectedCustomer, onLocationSelect }: Stora
   };
   
   return (
-    <div className="grid grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {hotels.map((hotel) => (
-        <Card key={hotel} className="p-4 bg-gray-900/50 border-gray-800">
-          <h3 className="text-lg font-semibold mb-4">Hotel {hotel}</h3>
-          <div className="grid grid-cols-3 gap-4">
-            {sections.map((section) => (
-              <div key={section} className="space-y-2">
-                <h4 className="font-medium">Section {section}</h4>
-                {shelves.map((shelf) => {
-                  const customer = getCustomerAtLocation(hotel, section, shelf);
-                  const isSelected = selectedCustomer?.id === customer?.id;
-                  const locationCode = formatLocationCode(hotel, section, shelf);
-                  return (
-                    <Popover key={shelf}>
-                      <PopoverTrigger asChild>
-                        <div
-                          onClick={() => !customer && handleLocationClick(hotel, section, shelf)}
-                          className={`p-2 border rounded cursor-pointer transition-colors ${
-                            isSelected
-                              ? "bg-green-600/20 border-green-500 text-green-400"
-                              : customer
-                              ? "bg-gray-800/50 border-gray-700 hover:bg-gray-800"
-                              : "bg-gray-800/30 border-gray-700 hover:bg-gray-800/50"
-                          }`}
-                        >
-                          <div className="text-sm">
-                            <div className="flex justify-between items-center">
-                              <span className="text-gray-300">{locationCode}</span>
-                              <Dialog>
-                                <DialogTrigger asChild>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="icon"
-                                    className="h-6 w-6"
-                                    onClick={(e) => e.stopPropagation()}
-                                  >
-                                    <Printer className="h-4 w-4" />
-                                  </Button>
-                                </DialogTrigger>
-                                <DialogContent>
-                                  <div id={`location-qr-${hotel}-${section}-${shelf}`}>
-                                    <LocationQRCode 
-                                      hotel={hotel} 
-                                      section={section} 
-                                      shelf={shelf} 
-                                    />
-                                  </div>
-                                  <Button 
-                                    className="mt-4 w-full"
-                                    onClick={() => handlePrintQRCode(hotel, section, shelf)}
-                                  >
-                                    Print QR Code
-                                  </Button>
-                                </DialogContent>
-                              </Dialog>
-                            </div>
-                            {customer ? (
-                              <div className="font-medium text-green-400">{customer.licensePlate}</div>
-                            ) : (
-                              <div className="text-gray-500">Empty</div>
-                            )}
-                          </div>
-                        </div>
-                      </PopoverTrigger>
-                      {customer && (
-                        <PopoverContent className="w-80">
-                          <div className="space-y-4">
-                            <h4 className="font-medium">Customer Details</h4>
-                            <div className="space-y-2">
-                              <div>
-                                <Label>Name</Label>
-                                <div>{customer.name}</div>
-                              </div>
-                              <div>
-                                <Label>License Plate</Label>
-                                <div>{customer.licensePlate}</div>
-                              </div>
-                              <div>
-                                <Label>Summer Tire Size</Label>
-                                <div>{customer.summerTireSize}</div>
-                              </div>
-                              <div>
-                                <Label>Winter Tire Size</Label>
-                                <div>{customer.winterTireSize}</div>
-                              </div>
-                              <div>
-                                <Label>Phone</Label>
-                                <div>{customer.phone}</div>
-                              </div>
-                              <div>
-                                <Label>Email</Label>
-                                <div>{customer.email}</div>
-                              </div>
-                            </div>
-                            <Button 
-                              variant="destructive"
-                              onClick={() => handleRemoveCustomer(customer.id)}
-                              className="w-full"
-                            >
-                              Remove from Location
-                            </Button>
-                          </div>
-                        </PopoverContent>
-                      )}
-                    </Popover>
-                  );
-                })}
-              </div>
-            ))}
-          </div>
-        </Card>
+        <StorageHotel
+          key={hotel}
+          hotel={hotel}
+          sections={sections}
+          shelves={shelves}
+          selectedCustomer={selectedCustomer}
+          onLocationSelect={handleLocationClick}
+          getCustomerAtLocation={getCustomerAtLocation}
+          handleRemoveCustomer={handleRemoveCustomer}
+          handlePrintQRCode={handlePrintQRCode}
+        />
       ))}
     </div>
   );
