@@ -25,7 +25,7 @@ export default function StorageSection({
 }: StorageSectionProps) {
   return (
     <div className="space-y-2">
-      <h4 className="font-medium">Section {section}</h4>
+      <h4 className="font-medium">Rivi {section}</h4>
       <div className="space-y-2">
         {shelves.map((shelf) => (
           <StorageShelf

@@ -25,7 +25,7 @@ export default function StorageHotel({
 }: StorageHotelProps) {
   return (
     <Card className="p-4 bg-gray-900/50 border-gray-800">
-      <h3 className="text-lg font-semibold mb-4">Hotel {hotel}</h3>
+      <h3 className="text-lg font-semibold mb-4">Hyllykkö {hotel}</h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {sections.map((section) => (
           <StorageSection
