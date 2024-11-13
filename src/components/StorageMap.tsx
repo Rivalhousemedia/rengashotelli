@@ -3,6 +3,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getCustomersWithLocations, assignStorageLocation } from "@/lib/api/storageApi";
 import { toast } from "sonner";
 import StorageHotel from "./storage/StorageHotel";
+import { Dialog, DialogContent } from "./ui/dialog";
+import CustomerForm from "./CustomerForm";
+import { useState } from "react";
 
 interface StorageMapProps {
   selectedCustomer?: Customer;
@@ -14,6 +17,12 @@ export default function StorageMap({ selectedCustomer, onLocationSelect }: Stora
   const sections = ["A", "B", "C"];
   const shelves = [1, 2, 3, 4, 5, 6];
   const queryClient = useQueryClient();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState<{
+    hotel: number;
+    section: string;
+    shelf: number;
+  } | null>(null);
 
   const { data: customers = [] } = useQuery({
     queryKey: ['customers-locations'],
@@ -56,27 +65,31 @@ export default function StorageMap({ selectedCustomer, onLocationSelect }: Stora
   };
 
   const handleLocationClick = async (hotel: number, section: string, shelf: number) => {
-    if (!selectedCustomer) return;
-    
-    const existingCustomer = getCustomerAtLocation(hotel, section, shelf);
-    if (existingCustomer) {
-      toast.error('This location is already occupied');
-      return;
-    }
-
-    await assignLocation.mutateAsync({
-      customerId: selectedCustomer.id,
-      location: {
-        hotel,
-        section,
-        shelf: shelf.toString(),
-        level: 1,
-        position: 1
+    if (selectedCustomer) {
+      const existingCustomer = getCustomerAtLocation(hotel, section, shelf);
+      if (existingCustomer) {
+        toast.error('This location is already occupied');
+        return;
       }
-    });
 
-    if (onLocationSelect) {
-      onLocationSelect(hotel, section, shelf);
+      await assignLocation.mutateAsync({
+        customerId: selectedCustomer.id,
+        location: {
+          hotel,
+          section,
+          shelf: shelf.toString(),
+          level: 1,
+          position: 1
+        }
+      });
+
+      if (onLocationSelect) {
+        onLocationSelect(hotel, section, shelf);
+      }
+    } else {
+      // Open dialog for new customer creation
+      setSelectedLocation({ hotel, section, shelf });
+      setIsDialogOpen(true);
     }
   };
 
@@ -114,20 +127,37 @@ export default function StorageMap({ selectedCustomer, onLocationSelect }: Stora
   };
   
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {hotels.map((hotel) => (
-        <StorageHotel
-          key={hotel}
-          hotel={hotel}
-          sections={sections}
-          shelves={shelves}
-          selectedCustomer={selectedCustomer}
-          onLocationSelect={handleLocationClick}
-          getCustomerAtLocation={getCustomerAtLocation}
-          handleRemoveCustomer={handleRemoveCustomer}
-          handlePrintQRCode={handlePrintQRCode}
-        />
-      ))}
-    </div>
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {hotels.map((hotel) => (
+          <StorageHotel
+            key={hotel}
+            hotel={hotel}
+            sections={sections}
+            shelves={shelves}
+            selectedCustomer={selectedCustomer}
+            onLocationSelect={handleLocationClick}
+            getCustomerAtLocation={getCustomerAtLocation}
+            handleRemoveCustomer={handleRemoveCustomer}
+            handlePrintQRCode={handlePrintQRCode}
+          />
+        ))}
+      </div>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-3xl">
+          <CustomerForm 
+            preselectedLocation={selectedLocation ? 
+              `H${selectedLocation.hotel}-${selectedLocation.section}-${selectedLocation.shelf}` 
+              : undefined
+            }
+            onSuccess={() => {
+              setIsDialogOpen(false);
+              queryClient.invalidateQueries({ queryKey: ['customers-locations'] });
+            }}
+          />
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

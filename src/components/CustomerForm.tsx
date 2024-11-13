@@ -8,7 +8,12 @@ import QRCode from "./QRCode";
 import { Customer } from "@/lib/types";
 import StorageMap from "./StorageMap";
 
-export default function CustomerForm() {
+interface CustomerFormProps {
+  preselectedLocation?: string;
+  onSuccess?: () => void;
+}
+
+export default function CustomerForm({ preselectedLocation, onSuccess }: CustomerFormProps) {
   const [formData, setFormData] = useState<Omit<Customer, 'id' | 'created_at'>>({
     name: "",
     licensePlate: "",
@@ -20,7 +25,7 @@ export default function CustomerForm() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [savedCustomer, setSavedCustomer] = useState<Customer | null>(null);
-  const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<string | null>(preselectedLocation || null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,7 +37,7 @@ export default function CustomerForm() {
     
     try {
       const customer = await createCustomer(formData);
-      console.log("Saved customer data:", customer); // Debug log
+      console.log("Saved customer data:", customer);
       toast.success("Customer information saved!");
       setSavedCustomer(customer);
       setFormData({
@@ -44,6 +49,7 @@ export default function CustomerForm() {
         email: "",
         status: "active"
       });
+      onSuccess?.();
     } catch (error) {
       toast.error("Failed to save customer information");
       console.error(error);
@@ -132,7 +138,7 @@ export default function CustomerForm() {
         </Button>
       </form>
 
-      {savedCustomer && (
+      {savedCustomer && !preselectedLocation && (
         <div className="space-y-6">
           <div className="p-6 bg-gray-900/50 backdrop-blur-sm rounded-lg border border-gray-800 shadow">
             {selectedLocation && (
