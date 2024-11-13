@@ -5,19 +5,20 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { createCustomer } from "@/lib/supabase";
 import QRCode from "./QRCode";
+import { Customer } from "@/lib/types";
 
 export default function CustomerForm() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<Omit<Customer, 'id' | 'created_at'>>({
     name: "",
-    license_plate: "",
-    summer_tire_size: "",
-    winter_tire_size: "",
+    licensePlate: "",
+    summerTireSize: "",
+    winterTireSize: "",
     phone: "",
     email: "",
     status: "active",
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [savedCustomer, setSavedCustomer] = useState(null);
+  const [savedCustomer, setSavedCustomer] = useState<Customer | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,9 +30,9 @@ export default function CustomerForm() {
       setSavedCustomer(customer);
       setFormData({
         name: "",
-        license_plate: "",
-        summer_tire_size: "",
-        winter_tire_size: "",
+        licensePlate: "",
+        summerTireSize: "",
+        winterTireSize: "",
         phone: "",
         email: "",
         status: "active"
@@ -61,8 +62,8 @@ export default function CustomerForm() {
           <Label htmlFor="licensePlate">License Plate</Label>
           <Input
             id="licensePlate"
-            value={formData.license_plate}
-            onChange={(e) => setFormData({ ...formData, license_plate: e.target.value })}
+            value={formData.licensePlate}
+            onChange={(e) => setFormData({ ...formData, licensePlate: e.target.value })}
             required
           />
         </div>
@@ -71,8 +72,8 @@ export default function CustomerForm() {
           <Label htmlFor="summerTireSize">Summer Tire Size</Label>
           <Input
             id="summerTireSize"
-            value={formData.summer_tire_size}
-            onChange={(e) => setFormData({ ...formData, summer_tire_size: e.target.value })}
+            value={formData.summerTireSize}
+            onChange={(e) => setFormData({ ...formData, summerTireSize: e.target.value })}
             required
           />
         </div>
@@ -81,8 +82,8 @@ export default function CustomerForm() {
           <Label htmlFor="winterTireSize">Winter Tire Size</Label>
           <Input
             id="winterTireSize"
-            value={formData.winter_tire_size}
-            onChange={(e) => setFormData({ ...formData, winter_tire_size: e.target.value })}
+            value={formData.winterTireSize}
+            onChange={(e) => setFormData({ ...formData, winterTireSize: e.target.value })}
             required
           />
         </div>
