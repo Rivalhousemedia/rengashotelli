@@ -7,13 +7,6 @@ import { createCustomer } from "@/lib/supabase";
 import QRCode from "./QRCode";
 import { Customer } from "@/lib/types";
 import StorageMap from "./StorageMap";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 // Generate tire sizes from 16 to 24 inches
 const tireSizes = Array.from({ length: 9 }, (_, i) => `${i + 16}"`);
@@ -34,6 +27,10 @@ export default function CustomerForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.summerTireSize && !formData.winterTireSize) {
+      toast.error("Please fill in either summer or winter tire size");
+      return;
+    }
     setIsLoading(true);
     
     try {
@@ -88,42 +85,24 @@ export default function CustomerForm() {
         
         <div className="space-y-2">
           <Label htmlFor="summerTireSize">Summer Tire Size</Label>
-          <Select
+          <Input
+            id="summerTireSize"
             value={formData.summerTireSize}
-            onValueChange={(value) => setFormData({ ...formData, summerTireSize: value })}
-            required
-          >
-            <SelectTrigger className="bg-gray-800/30 border-gray-700 focus:bg-gray-800/30 hover:bg-gray-800/50 text-gray-300">
-              <SelectValue placeholder="Select tire size" />
-            </SelectTrigger>
-            <SelectContent>
-              {tireSizes.map((size) => (
-                <SelectItem key={size} value={size}>
-                  {size}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            onChange={(e) => setFormData({ ...formData, summerTireSize: e.target.value })}
+            placeholder="e.g., 205/55R16"
+            className="bg-gray-800/30 border-gray-700 focus:bg-gray-800/30 hover:bg-gray-800/50 text-gray-300"
+          />
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="winterTireSize">Winter Tire Size</Label>
-          <Select
+          <Input
+            id="winterTireSize"
             value={formData.winterTireSize}
-            onValueChange={(value) => setFormData({ ...formData, winterTireSize: value })}
-            required
-          >
-            <SelectTrigger className="bg-gray-800/30 border-gray-700 focus:bg-gray-800/30 hover:bg-gray-800/50 text-gray-300">
-              <SelectValue placeholder="Select tire size" />
-            </SelectTrigger>
-            <SelectContent>
-              {tireSizes.map((size) => (
-                <SelectItem key={size} value={size}>
-                  {size}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            onChange={(e) => setFormData({ ...formData, winterTireSize: e.target.value })}
+            placeholder="e.g., 205/55R16"
+            className="bg-gray-800/30 border-gray-700 focus:bg-gray-800/30 hover:bg-gray-800/50 text-gray-300"
+          />
         </div>
 
         <div className="space-y-2">

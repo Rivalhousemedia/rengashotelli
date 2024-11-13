@@ -10,6 +10,16 @@ export default function QRCode({ customer, selectedLocation }: { customer: Custo
     winterTireSize: customer.winterTireSize,
   });
 
+  const getTireInfo = () => {
+    if (customer.summerTireSize) {
+      return `Summer tires ${customer.summerTireSize}`;
+    }
+    if (customer.winterTireSize) {
+      return `Winter tires ${customer.winterTireSize}`;
+    }
+    return '';
+  };
+
   return (
     <div className="p-4 bg-white rounded-3xl shadow print:shadow-none w-[400px]">
       <div className="flex items-center justify-between gap-4">
@@ -17,6 +27,7 @@ export default function QRCode({ customer, selectedLocation }: { customer: Custo
           <p className="font-bold text-2xl text-black">{customer.name}</p>
           <p className="text-lg text-gray-600">{customer.licensePlate}</p>
           <p className="text-xl font-bold text-gray-600">{selectedLocation || 'Not assigned'}</p>
+          <p className="text-lg text-gray-600">{getTireInfo()}</p>
         </div>
         <QRCodeSVG value={qrData} size={100} />
       </div>
