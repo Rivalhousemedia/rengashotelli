@@ -7,7 +7,12 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
-export default function StorageMap({ selectedCustomer }: { selectedCustomer?: Customer }) {
+interface StorageMapProps {
+  selectedCustomer?: Customer;
+  onLocationSelect?: (hotel: number, section: string, shelf: number) => void;
+}
+
+export default function StorageMap({ selectedCustomer, onLocationSelect }: StorageMapProps) {
   const hotels = [1, 2, 3, 4];
   const sections = ["A", "B", "C"];
   const shelves = [1, 2, 3, 4, 5, 6];
@@ -76,6 +81,10 @@ export default function StorageMap({ selectedCustomer }: { selectedCustomer?: Cu
         position: 1
       }
     });
+
+    if (onLocationSelect) {
+      onLocationSelect(hotel, section, shelf);
+    }
   };
 
   const handleRemoveCustomer = (customerId: string) => {

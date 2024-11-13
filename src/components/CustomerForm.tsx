@@ -30,6 +30,7 @@ export default function CustomerForm() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [savedCustomer, setSavedCustomer] = useState<Customer | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,6 +55,10 @@ export default function CustomerForm() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleLocationSelect = (hotel: number, section: string, shelf: number) => {
+    setSelectedLocation(`H${hotel}-${section}-${shelf}`);
   };
 
   return (
@@ -153,6 +158,12 @@ export default function CustomerForm() {
       {savedCustomer && (
         <div className="space-y-6">
           <div className="p-6 bg-gray-900/50 backdrop-blur-sm rounded-lg border border-gray-800 shadow">
+            {selectedLocation && (
+              <div className="mb-4 text-center">
+                <h3 className="text-lg text-gray-400 mb-2">Selected Location:</h3>
+                <p className="text-3xl font-bold text-green-500">{selectedLocation}</p>
+              </div>
+            )}
             <QRCode customer={savedCustomer} />
             <Button 
               onClick={() => window.print()} 
@@ -165,7 +176,10 @@ export default function CustomerForm() {
           <div className="p-6 bg-gray-900/50 backdrop-blur-sm rounded-lg border border-gray-800 shadow">
             <h2 className="text-lg font-semibold mb-4">Assign Storage Location</h2>
             <p className="text-sm text-gray-300 mb-4">Click on an empty storage location to assign this customer.</p>
-            <StorageMap selectedCustomer={savedCustomer} />
+            <StorageMap 
+              selectedCustomer={savedCustomer} 
+              onLocationSelect={handleLocationSelect}
+            />
           </div>
         </div>
       )}
