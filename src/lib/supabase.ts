@@ -7,14 +7,18 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 export const supabase = createClient(supabaseUrl, supabaseKey)
 
 export async function createCustomer(customer: Omit<Customer, 'id' | 'created_at'>) {
-  // First check if customer already exists
-  const { data: existingCustomer } = await supabase
+  // First check if customer already exists using individual queries
+  const { data: existingCustomers } = await supabase
     .from('customers')
     .select()
-    .or(`name.eq.${customer.name},license_plate.eq.${customer.licensePlate},phone.eq.${customer.phone},email.eq.${customer.email}`)
-    .single();
+    .or(
+      `name.eq.${customer.name},` +
+      `license_plate.eq.${customer.licensePlate},` +
+      `phone.eq.${customer.phone},` +
+      `email.eq.${customer.email}`
+    );
 
-  if (existingCustomer) {
+  if (existingCustomers && existingCustomers.length > 0) {
     throw new Error('A customer with the same name, license plate, phone, or email already exists');
   }
 
