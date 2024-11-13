@@ -116,6 +116,8 @@ export async function searchCustomers(query: string) {
 }
 
 export async function getCustomerById(id: string) {
+  console.log("customerApi - getCustomerById called with id:", id);
+  
   const { data, error } = await supabase
     .from('customers')
     .select(`
@@ -136,7 +138,9 @@ export async function getCustomerById(id: string) {
     throw error;
   }
 
-  return {
+  console.log("customerApi - Raw customer data:", data);
+
+  const mappedCustomer = {
     id: data.id,
     name: data.name,
     licensePlate: data.license_plate,
@@ -153,6 +157,15 @@ export async function getCustomerById(id: string) {
       position: data.storage_locations.position,
     } : undefined
   };
+
+  console.log("customerApi - Mapped customer data:", {
+    id: mappedCustomer.id,
+    name: mappedCustomer.name,
+    hasStorageLocation: mappedCustomer.storageLocation ? 'yes' : 'no',
+    storageLocationDetails: mappedCustomer.storageLocation
+  });
+
+  return mappedCustomer;
 }
 
 export async function updateCustomer(id: string, customer: Partial<Customer>) {

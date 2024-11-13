@@ -21,6 +21,13 @@ export default function CustomerDetails() {
     enabled: !!id
   });
 
+  console.log("CustomerDetails - Initial customer data:", {
+    customerId: id,
+    customerData: customer,
+    hasStorageLocation: customer?.storageLocation ? 'yes' : 'no',
+    storageLocationDetails: customer?.storageLocation
+  });
+
   const updateMutation = useMutation({
     mutationFn: (data: Partial<Customer>) => updateCustomer(id as string, data),
     onSuccess: () => {
@@ -33,47 +40,14 @@ export default function CustomerDetails() {
   });
 
   const handleLocationSelect = (hotel: number, section: string, shelf: number) => {
-    setSelectedLocation(`H${hotel}-${section}-${shelf}`);
-  };
-
-  const handlePrintQR = () => {
-    if (!customer) return;
-    
-    const printWindow = window.open('', '_blank');
-    if (printWindow) {
-      printWindow.document.write(`
-        <html>
-          <head>
-            <title>Asiakkaan QR-koodi</title>
-            <style>
-              @media print {
-                body { margin: 0; }
-                .print-content { padding: 20px; }
-              }
-            </style>
-          </head>
-          <body>
-            <div class="print-content"></div>
-          </body>
-        </html>
-      `);
-      
-      const content = document.createElement('div');
-      content.innerHTML = `
-        <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
-          ${document.getElementById('customer-qr-details')?.innerHTML || ''}
-        </div>
-      `;
-      
-      const printContent = printWindow.document.querySelector('.print-content');
-      if (printContent) {
-        printContent.appendChild(content);
-      }
-      printWindow.document.close();
-      printWindow.focus();
-      printWindow.print();
-      printWindow.close();
-    }
+    const newLocation = `H${hotel}-${section}-${shelf}`;
+    console.log("CustomerDetails - Location selected:", {
+      hotel,
+      section,
+      shelf,
+      formattedLocation: newLocation
+    });
+    setSelectedLocation(newLocation);
   };
 
   if (isLoading) return <div>Ladataan...</div>;
@@ -82,6 +56,14 @@ export default function CustomerDetails() {
   const locationCode = customer.storageLocation ? 
     `H${customer.storageLocation.hotel}-${customer.storageLocation.section}-${customer.storageLocation.shelf}` : 
     selectedLocation;
+
+  console.log("CustomerDetails - Final location code:", {
+    computedFromStorage: customer.storageLocation ? 
+      `H${customer.storageLocation.hotel}-${customer.storageLocation.section}-${customer.storageLocation.shelf}` : 
+      null,
+    selectedLocation,
+    finalLocationCode: locationCode
+  });
 
   return (
     <div className="container mx-auto p-4">
