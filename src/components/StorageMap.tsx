@@ -8,9 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
 export default function StorageMap({ selectedCustomer }: { selectedCustomer?: Customer }) {
-  const hotels = [1, 2];
+  const hotels = [1, 2, 3, 4];
   const sections = ["A", "B", "C"];
-  const shelves = [1, 2, 3, 4];
+  const shelves = [1, 2, 3, 4, 5, 6];
   const queryClient = useQueryClient();
 
   const { data: customers = [] } = useQuery({
