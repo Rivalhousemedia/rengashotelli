@@ -8,9 +8,6 @@ import QRCode from "./QRCode";
 import { Customer } from "@/lib/types";
 import StorageMap from "./StorageMap";
 
-// Generate tire sizes from 16 to 24 inches
-const tireSizes = Array.from({ length: 9 }, (_, i) => `${i + 16}"`);
-
 export default function CustomerForm() {
   const [formData, setFormData] = useState<Omit<Customer, 'id' | 'created_at'>>({
     name: "",
@@ -35,6 +32,7 @@ export default function CustomerForm() {
     
     try {
       const customer = await createCustomer(formData);
+      console.log("Saved customer data:", customer); // Debug log
       toast.success("Customer information saved!");
       setSavedCustomer(customer);
       setFormData({
@@ -82,7 +80,7 @@ export default function CustomerForm() {
             className="bg-gray-800/30 border-gray-700 focus:bg-gray-800/30 hover:bg-gray-800/50 text-gray-300"
           />
         </div>
-        
+
         <div className="space-y-2">
           <Label htmlFor="summerTireSize">Summer Tire Size</Label>
           <Input
