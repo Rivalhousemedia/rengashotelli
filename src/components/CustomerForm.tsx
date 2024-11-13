@@ -48,89 +48,95 @@ export default function CustomerForm() {
 
   return (
     <div className="space-y-6">
-      <form onSubmit={handleSubmit} className="space-y-6 p-6 bg-white rounded-lg shadow">
+      <form onSubmit={handleSubmit} className="space-y-6 p-6 bg-gray-900/50 backdrop-blur-sm rounded-lg shadow">
         <div className="space-y-2">
-          <Label htmlFor="name">Customer Name</Label>
+          <Label htmlFor="name" className="text-white">Customer Name</Label>
           <Input
             id="name"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             required
+            className="bg-white text-gray-900"
           />
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="licensePlate">License Plate</Label>
+          <Label htmlFor="licensePlate" className="text-white">License Plate</Label>
           <Input
             id="licensePlate"
             value={formData.licensePlate}
             onChange={(e) => setFormData({ ...formData, licensePlate: e.target.value })}
             required
+            className="bg-white text-gray-900"
           />
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="summerTireSize">Summer Tire Size</Label>
+          <Label htmlFor="summerTireSize" className="text-white">Summer Tire Size</Label>
           <Input
             id="summerTireSize"
             value={formData.summerTireSize}
             onChange={(e) => setFormData({ ...formData, summerTireSize: e.target.value })}
             required
+            className="bg-white text-gray-900"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="winterTireSize">Winter Tire Size</Label>
+          <Label htmlFor="winterTireSize" className="text-white">Winter Tire Size</Label>
           <Input
             id="winterTireSize"
             value={formData.winterTireSize}
             onChange={(e) => setFormData({ ...formData, winterTireSize: e.target.value })}
             required
+            className="bg-white text-gray-900"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="phone">Phone</Label>
+          <Label htmlFor="phone" className="text-white">Phone</Label>
           <Input
             id="phone"
             type="tel"
             value={formData.phone}
             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
             required
+            className="bg-white text-gray-900"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email" className="text-white">Email</Label>
           <Input
             id="email"
             type="email"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             required
+            className="bg-white text-gray-900"
           />
         </div>
 
-        <Button type="submit" className="w-full" disabled={isLoading}>
+        <Button type="submit" className="w-full bg-green-600 hover:bg-green-700" disabled={isLoading}>
           {isLoading ? "Saving..." : "Save Customer"}
         </Button>
       </form>
 
       {savedCustomer && (
         <div className="space-y-6">
-          <div className="p-6 bg-white rounded-lg shadow">
+          <div className="p-6 bg-gray-900/50 backdrop-blur-sm rounded-lg shadow">
             <QRCode customer={savedCustomer} />
             <Button 
               onClick={() => window.print()} 
-              className="mt-4 w-full"
+              className="mt-4 w-full bg-green-600 hover:bg-green-700"
             >
               Print Label
             </Button>
           </div>
           
-          <div className="p-6 bg-white rounded-lg shadow">
-            <h2 className="text-lg font-semibold mb-4">Assign Storage Location</h2>
-            <p className="text-sm text-gray-600 mb-4">Click on an empty storage location to assign this customer.</p>
+          <div className="p-6 bg-gray-900/50 backdrop-blur-sm rounded-lg shadow">
+            <h2 className="text-lg font-semibold text-white mb-4">Assign Storage Location</h2>
+            <p className="text-sm text-gray-300 mb-4">Click on an empty storage location to assign this customer.</p>
             <StorageMap selectedCustomer={savedCustomer} />
           </div>
         </div>

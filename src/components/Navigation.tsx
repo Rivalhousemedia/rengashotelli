@@ -11,19 +11,12 @@ export default function Navigation() {
               Tire Storage
             </Link>
           </div>
-          <div className="flex items-center space-x-4">
-            <Button variant="ghost" className="text-gray-300 hover:text-white">
-              About
-            </Button>
-            <Button variant="ghost" className="text-gray-300 hover:text-white">
-              Services
-            </Button>
-            <Button variant="ghost" className="text-gray-300 hover:text-white">
-              Contact
-            </Button>
-            <Button className="bg-green-600 hover:bg-green-700 text-white">
-              Book Now
-            </Button>
+          <div className="flex items-center">
+            <img 
+              src="/rengaspalvelu-logo.png" 
+              alt="Rengaspalvelu" 
+              className="h-8 mr-4"
+            />
           </div>
         </div>
       </div>
