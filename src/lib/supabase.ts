@@ -113,7 +113,6 @@ export async function assignStorageLocation(
   location: Omit<StorageLocation, 'id' | 'created_at'> | null
 ) {
   if (!location) {
-    // Remove existing storage location
     const { error } = await supabase
       .from('storage_locations')
       .delete()
@@ -126,7 +125,6 @@ export async function assignStorageLocation(
     return null;
   }
 
-  // First check if customer already has a location
   const { data: existingLocation } = await supabase
     .from('storage_locations')
     .select('*')
@@ -134,7 +132,6 @@ export async function assignStorageLocation(
     .single();
 
   if (existingLocation) {
-    // Update existing location
     const { data: locationData, error: locationError } = await supabase
       .from('storage_locations')
       .update({
@@ -156,7 +153,6 @@ export async function assignStorageLocation(
     return locationData;
   }
 
-  // Create new location if none exists
   const { data: locationData, error: locationError } = await supabase
     .from('storage_locations')
     .insert([{
@@ -182,9 +178,13 @@ export async function getCustomerLocation(customerId: string) {
   const { data, error } = await supabase
     .from('storage_locations')
     .select('*')
-    .eq('customer_id', customerId)
-    .single();
+    .eq('customer_id', customerId);
 
-  if (error) throw error;
-  return data;
+  if (error) {
+    console.error('Error fetching customer location:', error);
+    throw error;
+  }
+
+  // Return null if no location is found, otherwise return the first location
+  return data.length > 0 ? data[0] : null;
 }
