@@ -53,6 +53,45 @@ export async function searchCustomers(query: string) {
   }))
 }
 
+export async function getCustomersWithLocations() {
+  const { data, error } = await supabase
+    .from('customers')
+    .select(`
+      *,
+      storage_locations (
+        hotel,
+        section,
+        shelf,
+        level,
+        position
+      )
+    `)
+    .not('storage_locations', 'is', null);
+
+  if (error) {
+    console.error('Error fetching customers with locations:', error);
+    throw error;
+  }
+
+  return data.map(customer => ({
+    id: customer.id,
+    name: customer.name,
+    licensePlate: customer.license_plate,
+    summerTireSize: customer.summer_tire_size,
+    winterTireSize: customer.winter_tire_size,
+    phone: customer.phone,
+    email: customer.email,
+    status: customer.status as 'active' | 'interim' | 'inactive',
+    storageLocation: customer.storage_locations ? {
+      hotel: customer.storage_locations.hotel,
+      section: customer.storage_locations.section,
+      shelf: customer.storage_locations.shelf,
+      level: customer.storage_locations.level,
+      position: customer.storage_locations.position,
+    } : undefined
+  }));
+}
+
 export async function updateStorageLocation(
   customerId: string,
   location: Omit<StorageLocation, 'id' | 'created_at' | 'customer_id'>

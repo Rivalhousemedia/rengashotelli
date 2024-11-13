@@ -13,7 +13,7 @@ export interface Customer {
 export interface StorageLocation {
   hotel: number;
   section: string;
-  shelf: string; // L for Left, R for Right
+  shelf: string;
   level: number;
   position: number;
 }
