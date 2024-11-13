@@ -74,7 +74,7 @@ export async function getCustomersWithLocations() {
     .from('customers')
     .select(`
       *,
-      storage_locations (
+      storage_locations!storage_locations_customer_id_fkey (
         hotel,
         section,
         shelf,
@@ -82,7 +82,7 @@ export async function getCustomersWithLocations() {
         position
       )
     `)
-    .not('storage_locations', 'is', null);
+    .not('storage_locations.id', 'is', null);
 
   if (error) {
     console.error('Error fetching customers with locations:', error);
@@ -126,7 +126,37 @@ export async function assignStorageLocation(
     return null;
   }
 
-  // First create the storage location
+  // First check if customer already has a location
+  const { data: existingLocation } = await supabase
+    .from('storage_locations')
+    .select('*')
+    .eq('customer_id', customerId)
+    .single();
+
+  if (existingLocation) {
+    // Update existing location
+    const { data: locationData, error: locationError } = await supabase
+      .from('storage_locations')
+      .update({
+        hotel: location.hotel,
+        section: location.section,
+        shelf: location.shelf,
+        level: location.level,
+        position: location.position
+      })
+      .eq('id', existingLocation.id)
+      .select()
+      .single();
+
+    if (locationError) {
+      console.error('Error updating storage location:', locationError);
+      throw locationError;
+    }
+
+    return locationData;
+  }
+
+  // Create new location if none exists
   const { data: locationData, error: locationError } = await supabase
     .from('storage_locations')
     .insert([{
@@ -145,17 +175,6 @@ export async function assignStorageLocation(
     throw locationError;
   }
 
-  // Then update the customer with the storage location ID
-  const { error: customerError } = await supabase
-    .from('customers')
-    .update({ storage_location_id: locationData.id })
-    .eq('id', customerId);
-
-  if (customerError) {
-    console.error('Error updating customer:', customerError);
-    throw customerError;
-  }
-
   return locationData;
 }
 
@@ -164,8 +183,8 @@ export async function getCustomerLocation(customerId: string) {
     .from('storage_locations')
     .select('*')
     .eq('customer_id', customerId)
-    .single()
+    .single();
 
-  if (error) throw error
-  return data
+  if (error) throw error;
+  return data;
 }
