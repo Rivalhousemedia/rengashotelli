@@ -85,7 +85,7 @@ export default function StorageMap({ selectedCustomer }: { selectedCustomer?: Cu
   return (
     <div className="grid grid-cols-2 gap-6">
       {hotels.map((hotel) => (
-        <Card key={hotel} className="p-4">
+        <Card key={hotel} className="p-4 bg-gray-900/50 border-gray-800">
           <h3 className="text-lg font-semibold mb-4">Hotel {hotel}</h3>
           <div className="grid grid-cols-3 gap-4">
             {sections.map((section) => (
@@ -100,20 +100,20 @@ export default function StorageMap({ selectedCustomer }: { selectedCustomer?: Cu
                       <PopoverTrigger asChild>
                         <div
                           onClick={() => !customer && handleLocationClick(hotel, section, shelf)}
-                          className={`p-2 border rounded cursor-pointer ${
+                          className={`p-2 border rounded cursor-pointer transition-colors ${
                             isSelected
-                              ? "bg-blue-100 border-blue-500"
+                              ? "bg-green-600/20 border-green-500 text-green-400"
                               : customer
-                              ? "bg-gray-50"
-                              : "hover:bg-gray-50"
+                              ? "bg-gray-800/50 border-gray-700 hover:bg-gray-800"
+                              : "bg-gray-800/30 border-gray-700 hover:bg-gray-800/50"
                           }`}
                         >
                           <div className="text-sm">
-                            <div>{locationCode}</div>
+                            <div className="text-gray-300">{locationCode}</div>
                             {customer ? (
-                              <div className="font-medium text-blue-600">{customer.licensePlate}</div>
+                              <div className="font-medium text-green-400">{customer.licensePlate}</div>
                             ) : (
-                              <div className="text-gray-400">Empty</div>
+                              <div className="text-gray-500">Empty</div>
                             )}
                           </div>
                         </div>
