@@ -5,7 +5,14 @@ export async function getCustomersWithLocations() {
   const { data, error } = await supabase
     .from('customers')
     .select(`
-      *,
+      id,
+      name,
+      license_plate,
+      summer_tire_size,
+      winter_tire_size,
+      phone,
+      email,
+      status,
       storage_locations!storage_locations_customer_id_fkey (
         hotel,
         section,
@@ -31,7 +38,7 @@ export async function getCustomersWithLocations() {
     email: customer.email,
     status: customer.status as 'active' | 'interim' | 'inactive',
     storageLocation: customer.storage_locations ? {
-      hotel: customer.storage_locations.hotel,
+      hotel: parseInt(customer.storage_locations.hotel),
       section: customer.storage_locations.section,
       shelf: customer.storage_locations.shelf,
       level: customer.storage_locations.level,

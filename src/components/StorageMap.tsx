@@ -1,11 +1,10 @@
 import { Card } from "@/components/ui/card";
 import type { StorageLocation, Customer } from "@/lib/types";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getCustomersWithLocations, assignStorageLocation } from "@/lib/supabase";
+import { getCustomersWithLocations, assignStorageLocation } from "@/lib/api/storageApi";
 import { toast } from "sonner";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function StorageMap({ selectedCustomer }: { selectedCustomer?: Customer }) {
