@@ -9,11 +9,15 @@ export const supabase = createClient(supabaseUrl, supabaseKey)
 export async function createCustomer(customer: Omit<Customer, 'id' | 'created_at'>) {
   const { data, error } = await supabase
     .from('customers')
-    .insert(customer)
+    .insert([customer])
     .select()
     .single()
   
-  if (error) throw error
+  if (error) {
+    console.error('Error creating customer:', error)
+    throw error
+  }
+  
   return data
 }
 
