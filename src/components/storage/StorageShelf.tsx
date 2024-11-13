@@ -73,7 +73,41 @@ export default function StorageShelf({
 
   const handleLocationPrint = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onPrintQRCode(hotel, section, shelf);
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Sijainnin QR-koodi</title>
+            <style>
+              @media print {
+                body { margin: 0; }
+                .print-content { padding: 20px; }
+              }
+            </style>
+          </head>
+          <body>
+            <div class="print-content"></div>
+          </body>
+        </html>
+      `);
+      
+      const content = document.createElement('div');
+      content.innerHTML = `
+        <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+          ${document.getElementById(`location-qr-${hotel}-${section}-${shelf}`)?.innerHTML || ''}
+        </div>
+      `;
+      
+      const printContent = printWindow.document.querySelector('.print-content');
+      if (printContent) {
+        printContent.appendChild(content);
+      }
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close();
+    }
   };
 
   return (
