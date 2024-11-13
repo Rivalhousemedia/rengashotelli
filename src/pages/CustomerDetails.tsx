@@ -9,19 +9,19 @@ import { useState } from "react";
 import type { Customer } from "@/lib/types";
 import { QrCode } from "lucide-react";
 import QRCode from "@/components/QRCode";
+import StorageMap from "@/components/StorageMap";
 
 export default function CustomerDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
   
   const { data: customer, isLoading } = useQuery({
     queryKey: ['customer', id],
     queryFn: () => getCustomerById(id as string),
     enabled: !!id
   });
-
-  const [formData, setFormData] = useState<Partial<Customer>>({});
 
   const updateMutation = useMutation({
     mutationFn: (data: Partial<Customer>) => updateCustomer(id as string, data),
@@ -37,6 +37,10 @@ export default function CustomerDetails() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     updateMutation.mutate(formData);
+  };
+
+  const handleLocationSelect = (hotel: number, section: string, shelf: number) => {
+    setSelectedLocation(`H${hotel}-${section}-${shelf}`);
   };
 
   const handlePrintQR = () => {
@@ -84,7 +88,7 @@ export default function CustomerDetails() {
 
   const locationCode = customer.storageLocation ? 
     `H${customer.storageLocation.hotel}-${customer.storageLocation.section}-${customer.storageLocation.shelf}` : 
-    null;
+    selectedLocation;
 
   return (
     <div className="container mx-auto p-4">
@@ -161,23 +165,40 @@ export default function CustomerDetails() {
           <Button 
             type="submit" 
             className="w-full bg-green-600 hover:bg-green-700 text-white font-medium"
-            disabled={updateMutation.isPending}
+            disabled={updateMutation.isLoading}
           >
-            {updateMutation.isPending ? "Päivitetään..." : "Päivitä asiakas"}
+            {updateMutation.isLoading ? "Päivitetään..." : "Päivitä asiakas"}
           </Button>
         </form>
 
-        <div className="p-6 bg-gray-900/50 backdrop-blur-sm rounded-lg border border-gray-800 shadow">
-          <div id="customer-qr-details">
-            <QRCode customer={customer} selectedLocation={locationCode} />
+        <div className="space-y-6">
+          <div className="p-6 bg-gray-900/50 backdrop-blur-sm rounded-lg border border-gray-800 shadow">
+            {locationCode && (
+              <div className="mb-4 text-center">
+                <h3 className="text-lg text-gray-400 mb-2">Valittu sijainti:</h3>
+                <p className="text-3xl font-bold text-green-500">{locationCode}</p>
+              </div>
+            )}
+            <div id="customer-qr-details">
+              <QRCode customer={customer} selectedLocation={locationCode} />
+            </div>
+            <Button 
+              onClick={handlePrintQR} 
+              className="w-full bg-green-600 hover:bg-green-700 text-white font-medium"
+            >
+              <QrCode className="w-4 h-4 mr-2" />
+              Tulosta asiakkaan QR
+            </Button>
           </div>
-          <Button 
-            onClick={handlePrintQR}
-            className="w-full bg-green-600 hover:bg-green-700 text-white font-medium"
-          >
-            <QrCode className="w-4 h-4 mr-2" />
-            Tulosta asiakkaan QR
-          </Button>
+          
+          <div className="p-6 bg-gray-900/50 backdrop-blur-sm rounded-lg border border-gray-800 shadow">
+            <h2 className="text-lg font-semibold mb-4">Määritä varastopaikka</h2>
+            <p className="text-sm text-gray-300 mb-4">Klikkaa tyhjää varastopaikkaa määrittääksesi asiakkaan sijainnin.</p>
+            <StorageMap 
+              selectedCustomer={customer} 
+              onLocationSelect={handleLocationSelect}
+            />
+          </div>
         </div>
       </div>
     </div>
