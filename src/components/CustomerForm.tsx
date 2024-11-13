@@ -7,6 +7,8 @@ import { createCustomer } from "@/lib/supabase";
 import QRCode from "./QRCode";
 import { Customer } from "@/lib/types";
 import StorageMap from "./StorageMap";
+import { assignStorageLocation } from "@/lib/api/storageApi";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface CustomerFormProps {
   preselectedLocation?: string;
@@ -14,6 +16,7 @@ interface CustomerFormProps {
 }
 
 export default function CustomerForm({ preselectedLocation, onSuccess }: CustomerFormProps) {
+  const queryClient = useQueryClient();
   const [formData, setFormData] = useState<Omit<Customer, 'id' | 'created_at' | 'storageLocation'>>({
     name: "",
     licensePlate: "",
@@ -42,6 +45,23 @@ export default function CustomerForm({ preselectedLocation, onSuccess }: Custome
       
       const customer = await createCustomer(customerData);
       console.log("Saved customer data:", customer);
+
+      // If we have a preselected location, assign it immediately
+      if (preselectedLocation) {
+        const [hotel, section, shelf] = preselectedLocation.match(/H(\d+)-([A-Z])-(\d+)/)?.slice(1) || [];
+        if (hotel && section && shelf) {
+          await assignStorageLocation(customer.id, {
+            hotel: parseInt(hotel),
+            section,
+            shelf: shelf.toString(),
+            level: 1,
+            position: 1
+          });
+          // Invalidate queries to refresh the storage map
+          await queryClient.invalidateQueries({ queryKey: ['customers-locations'] });
+        }
+      }
+
       toast.success("Asiakkaan tiedot tallennettu!");
       setSavedCustomer(customer);
       setFormData({
