@@ -58,7 +58,7 @@ export async function searchCustomers(query: string) {
     .from('customers')
     .select(`
       *,
-      storage_locations!storage_locations_customer_id_fkey (
+      storage_locations (
         hotel,
         section,
         shelf,
@@ -81,6 +81,7 @@ export async function searchCustomers(query: string) {
     );
   }
 
+  console.log("Executing Supabase query...");
   const { data, error } = await supabaseQuery.limit(10);
 
   if (error) {
@@ -99,12 +100,12 @@ export async function searchCustomers(query: string) {
     phone: customer.phone,
     email: customer.email,
     status: customer.status as 'active' | 'interim' | 'inactive',
-    storageLocation: customer.storage_locations ? {
-      hotel: customer.storage_locations.hotel,
-      section: customer.storage_locations.section,
-      shelf: customer.storage_locations.shelf,
-      level: customer.storage_locations.level,
-      position: customer.storage_locations.position,
+    storageLocation: customer.storage_locations?.[0] ? {
+      hotel: customer.storage_locations[0].hotel,
+      section: customer.storage_locations[0].section,
+      shelf: customer.storage_locations[0].shelf,
+      level: customer.storage_locations[0].level,
+      position: customer.storage_locations[0].position,
     } : undefined
   }));
 

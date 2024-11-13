@@ -29,6 +29,8 @@ export default function CustomerSearchDialog({
   const handleSearch = async (query: string) => {
     console.log("=== Search Debug Start ===");
     console.log("Search triggered with query:", query);
+    console.log("Current search mode:", isSearchMode);
+    console.log("Dialog open state:", isOpen);
     
     if (query.length < 1) {
       console.log("Query too short, clearing results");
@@ -100,7 +102,10 @@ export default function CustomerSearchDialog({
                 <Input
                   className="pl-10"
                   placeholder="Hae nimellä tai rekisterinumerolla..."
-                  onChange={(e) => handleSearch(e.target.value)}
+                  onChange={(e) => {
+                    console.log("Input value changed:", e.target.value);
+                    handleSearch(e.target.value);
+                  }}
                 />
               </div>
             </div>
