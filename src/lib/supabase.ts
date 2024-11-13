@@ -110,8 +110,22 @@ export async function getCustomersWithLocations() {
 
 export async function assignStorageLocation(
   customerId: string,
-  location: Omit<StorageLocation, 'id' | 'created_at'>
+  location: Omit<StorageLocation, 'id' | 'created_at'> | null
 ) {
+  if (!location) {
+    // Remove existing storage location
+    const { error } = await supabase
+      .from('storage_locations')
+      .delete()
+      .eq('customer_id', customerId);
+
+    if (error) {
+      console.error('Error removing storage location:', error);
+      throw error;
+    }
+    return null;
+  }
+
   // First create the storage location
   const { data: locationData, error: locationError } = await supabase
     .from('storage_locations')

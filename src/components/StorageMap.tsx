@@ -3,6 +3,10 @@ import type { StorageLocation, Customer } from "@/lib/types";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getCustomersWithLocations, assignStorageLocation } from "@/lib/supabase";
 import { toast } from "sonner";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function StorageMap({ selectedCustomer }: { selectedCustomer?: Customer }) {
   const hotels = [1, 2];
@@ -24,6 +28,18 @@ export default function StorageMap({ selectedCustomer }: { selectedCustomer?: Cu
     },
     onError: () => {
       toast.error('Failed to assign storage location');
+    }
+  });
+
+  const removeFromLocation = useMutation({
+    mutationFn: (customerId: string) => 
+      assignStorageLocation(customerId, null),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['customers-locations'] });
+      toast.success('Customer removed from location');
+    },
+    onError: () => {
+      toast.error('Failed to remove customer from location');
     }
   });
 
@@ -59,6 +75,10 @@ export default function StorageMap({ selectedCustomer }: { selectedCustomer?: Cu
       }
     });
   };
+
+  const handleRemoveCustomer = (customerId: string) => {
+    removeFromLocation.mutate(customerId);
+  };
   
   return (
     <div className="grid grid-cols-2 gap-6">
@@ -74,26 +94,69 @@ export default function StorageMap({ selectedCustomer }: { selectedCustomer?: Cu
                   const isSelected = selectedCustomer?.id === customer?.id;
                   const locationCode = formatLocationCode(hotel, section, shelf);
                   return (
-                    <div
-                      key={shelf}
-                      onClick={() => handleLocationClick(hotel, section, shelf)}
-                      className={`p-2 border rounded cursor-pointer ${
-                        isSelected
-                          ? "bg-blue-100 border-blue-500"
-                          : customer
-                          ? "bg-gray-50"
-                          : "hover:bg-gray-50"
-                      }`}
-                    >
-                      <div className="text-sm">
-                        <div>{locationCode}</div>
-                        {customer ? (
-                          <div className="font-medium text-blue-600">{customer.licensePlate}</div>
-                        ) : (
-                          <div className="text-gray-400">Empty</div>
-                        )}
-                      </div>
-                    </div>
+                    <Popover key={shelf}>
+                      <PopoverTrigger asChild>
+                        <div
+                          onClick={() => !customer && handleLocationClick(hotel, section, shelf)}
+                          className={`p-2 border rounded cursor-pointer ${
+                            isSelected
+                              ? "bg-blue-100 border-blue-500"
+                              : customer
+                              ? "bg-gray-50"
+                              : "hover:bg-gray-50"
+                          }`}
+                        >
+                          <div className="text-sm">
+                            <div>{locationCode}</div>
+                            {customer ? (
+                              <div className="font-medium text-blue-600">{customer.licensePlate}</div>
+                            ) : (
+                              <div className="text-gray-400">Empty</div>
+                            )}
+                          </div>
+                        </div>
+                      </PopoverTrigger>
+                      {customer && (
+                        <PopoverContent className="w-80">
+                          <div className="space-y-4">
+                            <h4 className="font-medium">Customer Details</h4>
+                            <div className="space-y-2">
+                              <div>
+                                <Label>Name</Label>
+                                <div>{customer.name}</div>
+                              </div>
+                              <div>
+                                <Label>License Plate</Label>
+                                <div>{customer.licensePlate}</div>
+                              </div>
+                              <div>
+                                <Label>Summer Tire Size</Label>
+                                <div>{customer.summerTireSize}</div>
+                              </div>
+                              <div>
+                                <Label>Winter Tire Size</Label>
+                                <div>{customer.winterTireSize}</div>
+                              </div>
+                              <div>
+                                <Label>Phone</Label>
+                                <div>{customer.phone}</div>
+                              </div>
+                              <div>
+                                <Label>Email</Label>
+                                <div>{customer.email}</div>
+                              </div>
+                            </div>
+                            <Button 
+                              variant="destructive"
+                              onClick={() => handleRemoveCustomer(customer.id)}
+                              className="w-full"
+                            >
+                              Remove from Location
+                            </Button>
+                          </div>
+                        </PopoverContent>
+                      )}
+                    </Popover>
                   );
                 })}
               </div>
