@@ -24,6 +24,7 @@ export default function CustomerSearchDialog({
 }: CustomerSearchDialogProps) {
   const [isSearchMode, setIsSearchMode] = useState(true);
   const [searchResults, setSearchResults] = useState<Customer[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
 
   const handleSearch = async (query: string) => {
     if (query.length < 1) {
@@ -31,13 +32,18 @@ export default function CustomerSearchDialog({
       return;
     }
     
+    setIsSearching(true);
     try {
       const results = await searchCustomers(query);
+      // Filter out customers that already have a storage location
       const availableCustomers = results.filter(customer => !customer.storageLocation);
+      console.log("Available customers:", availableCustomers);
       setSearchResults(availableCustomers);
     } catch (error) {
       console.error('Search error:', error);
       toast.error("Asiakkaiden haku epäonnistui");
+    } finally {
+      setIsSearching(false);
     }
   };
 
@@ -45,6 +51,7 @@ export default function CustomerSearchDialog({
     <Dialog open={isOpen} onOpenChange={() => {
       onClose();
       setIsSearchMode(true);
+      setSearchResults([]);
     }}>
       <DialogContent className="max-w-3xl">
         <DialogTitle>
@@ -70,23 +77,33 @@ export default function CustomerSearchDialog({
               </div>
             </div>
 
-            <div className="space-y-2">
-              {searchResults.map((customer) => (
-                <Card key={customer.id} className="hover:bg-gray-100/5 transition-colors cursor-pointer" onClick={() => onCustomerSelect(customer)}>
-                  <CardContent className="p-4">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <div className="font-semibold">{customer.name}</div>
-                        <div className="text-sm text-gray-400">{customer.licensePlate}</div>
+            {isSearching ? (
+              <div className="text-center text-gray-500">Haetaan asiakkaita...</div>
+            ) : searchResults.length === 0 ? (
+              <div className="text-center text-gray-500">Ei tuloksia</div>
+            ) : (
+              <div className="space-y-2">
+                {searchResults.map((customer) => (
+                  <Card 
+                    key={customer.id} 
+                    className="hover:bg-gray-100/5 transition-colors cursor-pointer" 
+                    onClick={() => onCustomerSelect(customer)}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <div className="font-semibold">{customer.name}</div>
+                          <div className="text-sm text-gray-400">{customer.licensePlate}</div>
+                        </div>
+                        <Button variant="outline" size="sm">
+                          Valitse
+                        </Button>
                       </div>
-                      <Button variant="outline" size="sm">
-                        Valitse
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
 
             <div className="flex justify-between mt-4">
               <Button variant="outline" onClick={() => setIsSearchMode(false)}>
