@@ -30,6 +30,7 @@ export default function SearchBar() {
   const formatLocationCode = (customer: Customer) => {
     if (!customer.storageLocation) return 'Not assigned';
     const { hotel, section, shelf } = customer.storageLocation;
+    if (!hotel || !section || !shelf) return 'Not assigned';
     return `H${hotel}-${section}-${shelf}`;
   };
 
