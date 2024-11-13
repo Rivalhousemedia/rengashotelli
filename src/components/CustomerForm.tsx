@@ -3,19 +3,31 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import type { Customer } from "@/lib/types";
+import { createCustomer } from "@/lib/supabase";
+import type { Customer } from "@/lib/supabase-types";
 
 export default function CustomerForm() {
   const [formData, setFormData] = useState({
     name: "",
-    licensePlate: "",
-    tireSize: "",
+    license_plate: "",
+    tire_size: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, this would save to a backend
-    toast.success("Customer information saved!");
+    setIsLoading(true);
+    
+    try {
+      await createCustomer(formData);
+      toast.success("Customer information saved!");
+      setFormData({ name: "", license_plate: "", tire_size: "" });
+    } catch (error) {
+      toast.error("Failed to save customer information");
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -34,8 +46,8 @@ export default function CustomerForm() {
         <Label htmlFor="licensePlate">License Plate</Label>
         <Input
           id="licensePlate"
-          value={formData.licensePlate}
-          onChange={(e) => setFormData({ ...formData, licensePlate: e.target.value })}
+          value={formData.license_plate}
+          onChange={(e) => setFormData({ ...formData, license_plate: e.target.value })}
           required
         />
       </div>
@@ -44,14 +56,14 @@ export default function CustomerForm() {
         <Label htmlFor="tireSize">Tire Size</Label>
         <Input
           id="tireSize"
-          value={formData.tireSize}
-          onChange={(e) => setFormData({ ...formData, tireSize: e.target.value })}
+          value={formData.tire_size}
+          onChange={(e) => setFormData({ ...formData, tire_size: e.target.value })}
           required
         />
       </div>
 
-      <Button type="submit" className="w-full">
-        Generate QR Code
+      <Button type="submit" className="w-full" disabled={isLoading}>
+        {isLoading ? "Saving..." : "Generate QR Code"}
       </Button>
     </form>
   );
