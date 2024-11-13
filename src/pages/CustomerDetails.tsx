@@ -34,9 +34,6 @@ export default function CustomerDetails() {
     }
   });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (!customer) return <div>Customer not found</div>;
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     updateMutation.mutate(formData);
@@ -82,6 +79,13 @@ export default function CustomerDetails() {
     }
   };
 
+  if (isLoading) return <div>Loading...</div>;
+  if (!customer) return <div>Customer not found</div>;
+
+  const locationCode = customer.storageLocation ? 
+    `H${customer.storageLocation.hotel}-${customer.storageLocation.section}-${customer.storageLocation.shelf}` : 
+    null;
+
   return (
     <div className="container mx-auto p-4">
       <Button 
@@ -92,95 +96,90 @@ export default function CustomerDetails() {
         Back
       </Button>
       
-      {customer && (
-        <div className="space-y-6 max-w-2xl mx-auto">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="name">Customer Name</Label>
-              <Input
-                id="name"
-                defaultValue={customer.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="bg-gray-800/30 border-gray-700"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="licensePlate">License Plate</Label>
-              <Input
-                id="licensePlate"
-                defaultValue={customer.licensePlate}
-                onChange={(e) => setFormData({ ...formData, licensePlate: e.target.value })}
-                className="bg-gray-800/30 border-gray-700"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="summerTireSize">Summer Tire Size</Label>
-              <Input
-                id="summerTireSize"
-                defaultValue={customer.summerTireSize}
-                onChange={(e) => setFormData({ ...formData, summerTireSize: e.target.value })}
-                className="bg-gray-800/30 border-gray-700"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="winterTireSize">Winter Tire Size</Label>
-              <Input
-                id="winterTireSize"
-                defaultValue={customer.winterTireSize}
-                onChange={(e) => setFormData({ ...formData, winterTireSize: e.target.value })}
-                className="bg-gray-800/30 border-gray-700"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="phone">Phone</Label>
-              <Input
-                id="phone"
-                defaultValue={customer.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="bg-gray-800/30 border-gray-700"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                defaultValue={customer.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="bg-gray-800/30 border-gray-700"
-              />
-            </div>
-
-            <Button 
-              type="submit" 
-              className="w-full bg-green-600 hover:bg-green-700"
-              disabled={updateMutation.isPending}
-            >
-              {updateMutation.isPending ? "Updating..." : "Update Customer"}
-            </Button>
-          </form>
-
-          <div className="p-6 bg-gray-900/50 backdrop-blur-sm rounded-lg border border-gray-800 shadow">
-            <div id="customer-qr-details" className="mb-4">
-              <QRCode customer={customer} selectedLocation={customer.storageLocation ? 
-                `H${customer.storageLocation.hotel}-${customer.storageLocation.section}-${customer.storageLocation.shelf}` : 
-                null} 
-              />
-            </div>
-            <Button 
-              onClick={handlePrintQR}
-              className="w-full bg-green-600 hover:bg-green-700"
-            >
-              <QrCode className="w-4 h-4 mr-2" />
-              Print Customer QR
-            </Button>
+      <div className="space-y-6 max-w-2xl mx-auto">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="name">Customer Name</Label>
+            <Input
+              id="name"
+              defaultValue={customer.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className="bg-gray-800/30 border-gray-700"
+            />
           </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="licensePlate">License Plate</Label>
+            <Input
+              id="licensePlate"
+              defaultValue={customer.licensePlate}
+              onChange={(e) => setFormData({ ...formData, licensePlate: e.target.value })}
+              className="bg-gray-800/30 border-gray-700"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="summerTireSize">Summer Tire Size</Label>
+            <Input
+              id="summerTireSize"
+              defaultValue={customer.summerTireSize}
+              onChange={(e) => setFormData({ ...formData, summerTireSize: e.target.value })}
+              className="bg-gray-800/30 border-gray-700"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="winterTireSize">Winter Tire Size</Label>
+            <Input
+              id="winterTireSize"
+              defaultValue={customer.winterTireSize}
+              onChange={(e) => setFormData({ ...formData, winterTireSize: e.target.value })}
+              className="bg-gray-800/30 border-gray-700"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="phone">Phone</Label>
+            <Input
+              id="phone"
+              defaultValue={customer.phone}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              className="bg-gray-800/30 border-gray-700"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              defaultValue={customer.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              className="bg-gray-800/30 border-gray-700"
+            />
+          </div>
+
+          <Button 
+            type="submit" 
+            className="w-full bg-green-600 hover:bg-green-700"
+            disabled={updateMutation.isPending}
+          >
+            {updateMutation.isPending ? "Updating..." : "Update Customer"}
+          </Button>
+        </form>
+
+        <div className="p-6 bg-gray-900/50 backdrop-blur-sm rounded-lg border border-gray-800 shadow">
+          <div id="customer-qr-details" className="mb-4">
+            <QRCode customer={customer} selectedLocation={locationCode} />
+          </div>
+          <Button 
+            onClick={handlePrintQR}
+            className="w-full bg-green-600 hover:bg-green-700"
+          >
+            <QrCode className="w-4 h-4 mr-2" />
+            Print Customer QR
+          </Button>
         </div>
-      )}
+      </div>
     </div>
   );
 }
