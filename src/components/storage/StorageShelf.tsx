@@ -32,7 +32,8 @@ export default function StorageShelf({
   const isSelected = selectedCustomer?.id === customer?.id;
   const locationCode = `H${hotel}-${section}-${shelf}`;
 
-  const handlePrintCustomerQR = () => {
+  const handlePrintCustomerQR = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent event from bubbling up
     const printWindow = window.open('', '_blank');
     if (printWindow && customer) {
       printWindow.document.write(`
@@ -68,6 +69,11 @@ export default function StorageShelf({
       printWindow.print();
       printWindow.close();
     }
+  };
+
+  const handleLocationPrint = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent event from bubbling up
+    onPrintQRCode(hotel, section, shelf);
   };
 
   return (
@@ -107,7 +113,7 @@ export default function StorageShelf({
                   </div>
                   <Button 
                     className="mt-4 w-full"
-                    onClick={() => onPrintQRCode(hotel, section, shelf)}
+                    onClick={handleLocationPrint}
                   >
                     Tulosta sijainnin QR-koodi
                   </Button>
