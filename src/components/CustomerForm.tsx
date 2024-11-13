@@ -56,7 +56,7 @@ export default function CustomerForm() {
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             required
-            className="bg-gray-800/30 border-gray-700 hover:bg-gray-800/50 text-gray-300"
+            className="bg-gray-800/30 border-gray-700 focus:bg-gray-800/30 hover:bg-gray-800/50 text-gray-300"
           />
         </div>
         
@@ -67,7 +67,7 @@ export default function CustomerForm() {
             value={formData.licensePlate}
             onChange={(e) => setFormData({ ...formData, licensePlate: e.target.value })}
             required
-            className="bg-gray-800/30 border-gray-700 hover:bg-gray-800/50 text-gray-300"
+            className="bg-gray-800/30 border-gray-700 focus:bg-gray-800/30 hover:bg-gray-800/50 text-gray-300"
           />
         </div>
         
@@ -78,7 +78,7 @@ export default function CustomerForm() {
             value={formData.summerTireSize}
             onChange={(e) => setFormData({ ...formData, summerTireSize: e.target.value })}
             required
-            className="bg-gray-800/30 border-gray-700 hover:bg-gray-800/50 text-gray-300"
+            className="bg-gray-800/30 border-gray-700 focus:bg-gray-800/30 hover:bg-gray-800/50 text-gray-300"
           />
         </div>
 
@@ -89,7 +89,7 @@ export default function CustomerForm() {
             value={formData.winterTireSize}
             onChange={(e) => setFormData({ ...formData, winterTireSize: e.target.value })}
             required
-            className="bg-gray-800/30 border-gray-700 hover:bg-gray-800/50 text-gray-300"
+            className="bg-gray-800/30 border-gray-700 focus:bg-gray-800/30 hover:bg-gray-800/50 text-gray-300"
           />
         </div>
 
@@ -101,7 +101,7 @@ export default function CustomerForm() {
             value={formData.phone}
             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
             required
-            className="bg-gray-800/30 border-gray-700 hover:bg-gray-800/50 text-gray-300"
+            className="bg-gray-800/30 border-gray-700 focus:bg-gray-800/30 hover:bg-gray-800/50 text-gray-300"
           />
         </div>
 
@@ -113,7 +113,7 @@ export default function CustomerForm() {
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             required
-            className="bg-gray-800/30 border-gray-700 hover:bg-gray-800/50 text-gray-300"
+            className="bg-gray-800/30 border-gray-700 focus:bg-gray-800/30 hover:bg-gray-800/50 text-gray-300"
           />
         </div>
 
