@@ -10,15 +10,21 @@ export default function QRCode({ customer }: { customer: Customer }) {
     winterTireSize: customer.winterTireSize,
   });
 
+  const formatLocationCode = (customer: Customer) => {
+    if (!customer.storageLocation) return 'Not assigned';
+    const { hotel, section, shelf } = customer.storageLocation;
+    return `H${hotel}-${section}-${shelf}`;
+  };
+
   return (
-    <div className="p-4 bg-white rounded-lg shadow print:shadow-none">
-      <QRCodeSVG value={qrData} size={200} />
-      <div className="mt-4 text-center space-y-1">
-        <p className="font-medium">{customer.name}</p>
-        <p className="text-sm text-gray-600">{customer.licensePlate}</p>
-        <p className="text-xs text-gray-600">
-          Summer: {customer.summerTireSize} | Winter: {customer.winterTireSize}
-        </p>
+    <div className="p-4 bg-white rounded-3xl shadow print:shadow-none w-[400px]">
+      <div className="flex items-center justify-between gap-4">
+        <div className="space-y-1">
+          <p className="font-bold text-2xl text-black">{customer.name}</p>
+          <p className="text-lg text-gray-600">{customer.licensePlate}</p>
+          <p className="text-sm text-gray-600">{formatLocationCode(customer)}</p>
+        </div>
+        <QRCodeSVG value={qrData} size={100} />
       </div>
     </div>
   );
