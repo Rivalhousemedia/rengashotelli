@@ -38,7 +38,7 @@ export default function StorageShelf({
       printWindow.document.write(`
         <html>
           <head>
-            <title>Customer QR Code</title>
+            <title>Asiakkaan QR-koodi</title>
             <style>
               @media print {
                 body { margin: 0; }
@@ -109,7 +109,7 @@ export default function StorageShelf({
                     className="mt-4 w-full"
                     onClick={() => onPrintQRCode(hotel, section, shelf)}
                   >
-                    Print Location QR Code
+                    Tulosta sijainnin QR-koodi
                   </Button>
                 </DialogContent>
               </Dialog>
@@ -117,7 +117,7 @@ export default function StorageShelf({
             {customer ? (
               <div className="font-medium text-green-400">{customer.licensePlate}</div>
             ) : (
-              <div className="text-gray-500">Empty</div>
+              <div className="text-gray-500">Tyhjä</div>
             )}
           </div>
         </div>
@@ -125,30 +125,30 @@ export default function StorageShelf({
       {customer && (
         <PopoverContent className="w-80">
           <div className="space-y-4">
-            <h4 className="font-medium">Customer Details</h4>
+            <h4 className="font-medium">Asiakkaan tiedot</h4>
             <div className="space-y-2">
               <div>
-                <Label>Name</Label>
+                <Label>Nimi</Label>
                 <div>{customer.name}</div>
               </div>
               <div>
-                <Label>License Plate</Label>
+                <Label>Rekisterinumero</Label>
                 <div>{customer.licensePlate}</div>
               </div>
               <div>
-                <Label>Summer Tire Size</Label>
+                <Label>Kesärenkaiden koko</Label>
                 <div>{customer.summerTireSize}</div>
               </div>
               <div>
-                <Label>Winter Tire Size</Label>
+                <Label>Talvirenkaiden koko</Label>
                 <div>{customer.winterTireSize}</div>
               </div>
               <div>
-                <Label>Phone</Label>
+                <Label>Puhelin</Label>
                 <div>{customer.phone}</div>
               </div>
               <div>
-                <Label>Email</Label>
+                <Label>Sähköposti</Label>
                 <div>{customer.email}</div>
               </div>
             </div>
@@ -158,11 +158,11 @@ export default function StorageShelf({
                 onClick={() => onRemoveCustomer(customer.id)}
                 className="w-full mb-2"
               >
-                Remove from Location
+                Poista sijainnista
               </Button>
               <Link to={`/customer/${customer.id}`}>
                 <Button variant="secondary" className="w-full">
-                  Edit Customer
+                  Muokkaa asiakasta
                 </Button>
               </Link>
               <div id={`customer-qr-${customer.id}`} className="hidden">
@@ -174,7 +174,7 @@ export default function StorageShelf({
                 onClick={handlePrintCustomerQR}
               >
                 <QrCode className="w-4 h-4 mr-2" />
-                Print Customer QR
+                Tulosta asiakkaan QR
               </Button>
             </div>
           </div>

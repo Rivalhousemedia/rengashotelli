@@ -27,7 +27,7 @@ export default function SearchBar() {
       setSearchResults(results);
     } catch (error) {
       console.error('Search error:', error);
-      toast.error("Failed to search customers");
+      toast.error("Asiakkaiden haku epäonnistui");
     } finally {
       setIsSearching(false);
     }
@@ -41,23 +41,23 @@ export default function SearchBar() {
           const locationCode = `H${scannedData.hotel}-${scannedData.section}-${scannedData.shelf}`;
           handleSearch(locationCode);
           setIsScanning(false);
-          toast.success("QR code scanned successfully");
+          toast.success("QR-koodi skannattu onnistuneesti");
         }
       } catch (error) {
         console.error('QR scan error:', error);
-        toast.error("Invalid QR code");
+        toast.error("Virheellinen QR-koodi");
       }
     }
   };
 
   const formatLocationCode = (customer: Customer) => {
-    if (!customer.storageLocation) return 'Not assigned';
+    if (!customer.storageLocation) return 'Ei määritetty';
     const { hotel, section, shelf } = customer.storageLocation;
     const hotelStr = hotel?.toString();
     const sectionStr = section?.toString();
     const shelfStr = shelf?.toString();
     
-    if (!hotelStr || !sectionStr || !shelfStr) return 'Not assigned';
+    if (!hotelStr || !sectionStr || !shelfStr) return 'Ei määritetty';
     return `H${hotelStr}-${sectionStr}-${shelfStr}`;
   };
 
@@ -68,7 +68,7 @@ export default function SearchBar() {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
           <Input
             className="pl-10"
-            placeholder="Search by name, license plate, or location code (e.g. H1-A-1)..."
+            placeholder="Hae nimellä, rekisterinumerolla tai sijaintikoodilla (esim. H1-A-1)..."
             onChange={(e) => handleSearch(e.target.value)}
           />
         </div>
@@ -76,7 +76,7 @@ export default function SearchBar() {
           <DialogTrigger asChild>
             <Button variant="outline">
               <Camera className="h-4 w-4 mr-2" />
-              Scan QR
+              Skannaa QR
             </Button>
           </DialogTrigger>
           <DialogContent>
@@ -91,7 +91,7 @@ export default function SearchBar() {
         </Dialog>
       </div>
 
-      {isSearching && <p>Searching...</p>}
+      {isSearching && <p>Haetaan...</p>}
       
       <div className="grid gap-4">
         {searchResults.map((customer) => (
@@ -104,11 +104,11 @@ export default function SearchBar() {
                     <span className="text-muted-foreground">{customer.licensePlate}</span>
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    Summer Tire Size: {customer.summerTireSize}
+                    Kesärenkaat: {customer.summerTireSize}
                     <br />
-                    Winter Tire Size: {customer.winterTireSize}
+                    Talvirenkaat: {customer.winterTireSize}
                     <br />
-                    Location: {formatLocationCode(customer)}
+                    Sijainti: {formatLocationCode(customer)}
                   </div>
                 </div>
               </CardContent>

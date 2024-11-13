@@ -30,7 +30,7 @@ export default function CustomerForm({ preselectedLocation, onSuccess }: Custome
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.summerTireSize && !formData.winterTireSize) {
-      toast.error("Please fill in either summer or winter tire size");
+      toast.error("Täytä joko kesä- tai talvirenkaiden koko");
       return;
     }
     setIsLoading(true);
@@ -38,7 +38,7 @@ export default function CustomerForm({ preselectedLocation, onSuccess }: Custome
     try {
       const customer = await createCustomer(formData);
       console.log("Saved customer data:", customer);
-      toast.success("Customer information saved!");
+      toast.success("Asiakkaan tiedot tallennettu!");
       setSavedCustomer(customer);
       setFormData({
         name: "",
@@ -51,7 +51,7 @@ export default function CustomerForm({ preselectedLocation, onSuccess }: Custome
       });
       onSuccess?.();
     } catch (error) {
-      toast.error("Failed to save customer information");
+      toast.error("Asiakkaan tietojen tallennus epäonnistui");
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -66,7 +66,7 @@ export default function CustomerForm({ preselectedLocation, onSuccess }: Custome
     <div className="space-y-6">
       <form onSubmit={handleSubmit} className="space-y-6 p-6 bg-gray-900/50 backdrop-blur-sm rounded-lg border border-gray-800 shadow">
         <div className="space-y-2">
-          <Label htmlFor="name">Customer Name</Label>
+          <Label htmlFor="name">Asiakkaan nimi</Label>
           <Input
             id="name"
             value={formData.name}
@@ -77,7 +77,7 @@ export default function CustomerForm({ preselectedLocation, onSuccess }: Custome
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="licensePlate">License Plate</Label>
+          <Label htmlFor="licensePlate">Rekisterinumero</Label>
           <Input
             id="licensePlate"
             value={formData.licensePlate}
@@ -88,29 +88,29 @@ export default function CustomerForm({ preselectedLocation, onSuccess }: Custome
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="summerTireSize">Summer Tire Size</Label>
+          <Label htmlFor="summerTireSize">Kesärenkaiden koko</Label>
           <Input
             id="summerTireSize"
             value={formData.summerTireSize}
             onChange={(e) => setFormData({ ...formData, summerTireSize: e.target.value })}
-            placeholder="e.g., 205/55R16"
+            placeholder="esim. 205/55R16"
             className="bg-gray-800/30 border-gray-700 focus:bg-gray-800/30 hover:bg-gray-800/50 text-gray-300"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="winterTireSize">Winter Tire Size</Label>
+          <Label htmlFor="winterTireSize">Talvirenkaiden koko</Label>
           <Input
             id="winterTireSize"
             value={formData.winterTireSize}
             onChange={(e) => setFormData({ ...formData, winterTireSize: e.target.value })}
-            placeholder="e.g., 205/55R16"
+            placeholder="esim. 205/55R16"
             className="bg-gray-800/30 border-gray-700 focus:bg-gray-800/30 hover:bg-gray-800/50 text-gray-300"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="phone">Phone</Label>
+          <Label htmlFor="phone">Puhelin</Label>
           <Input
             id="phone"
             type="tel"
@@ -122,7 +122,7 @@ export default function CustomerForm({ preselectedLocation, onSuccess }: Custome
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">Sähköposti</Label>
           <Input
             id="email"
             type="email"
@@ -134,7 +134,7 @@ export default function CustomerForm({ preselectedLocation, onSuccess }: Custome
         </div>
 
         <Button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white font-medium" disabled={isLoading}>
-          {isLoading ? "Saving..." : "Save Customer"}
+          {isLoading ? "Tallennetaan..." : "Tallenna asiakas"}
         </Button>
       </form>
 
@@ -143,22 +143,22 @@ export default function CustomerForm({ preselectedLocation, onSuccess }: Custome
           <div className="p-6 bg-gray-900/50 backdrop-blur-sm rounded-lg border border-gray-800 shadow">
             {selectedLocation && (
               <div className="mb-4 text-center">
-                <h3 className="text-lg text-gray-400 mb-2">Selected Location:</h3>
+                <h3 className="text-lg text-gray-400 mb-2">Valittu sijainti:</h3>
                 <p className="text-3xl font-bold text-green-500">{selectedLocation}</p>
               </div>
             )}
             <QRCode customer={savedCustomer} selectedLocation={selectedLocation} />
             <Button 
               onClick={() => window.print()} 
-              className="mt-4 w-full bg-green-600 hover:bg-green-700"
+              className="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-medium"
             >
-              Print Label
+              Tulosta tarra
             </Button>
           </div>
           
           <div className="p-6 bg-gray-900/50 backdrop-blur-sm rounded-lg border border-gray-800 shadow">
-            <h2 className="text-lg font-semibold mb-4">Assign Storage Location</h2>
-            <p className="text-sm text-gray-300 mb-4">Click on an empty storage location to assign this customer.</p>
+            <h2 className="text-lg font-semibold mb-4">Määritä varastopaikka</h2>
+            <p className="text-sm text-gray-300 mb-4">Klikkaa tyhjää varastopaikkaa määrittääksesi asiakkaan sijainnin.</p>
             <StorageMap 
               selectedCustomer={savedCustomer} 
               onLocationSelect={handleLocationSelect}

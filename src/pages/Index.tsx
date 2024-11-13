@@ -18,19 +18,19 @@ export default function Index() {
               value="new" 
               className="data-[state=active]:bg-green-600 data-[state=active]:text-white px-6 py-2"
             >
-              New Customer
+              Uusi asiakas
             </TabsTrigger>
             <TabsTrigger 
               value="search"
               className="data-[state=active]:bg-green-600 data-[state=active]:text-white px-6 py-2"
             >
-              Search
+              Haku
             </TabsTrigger>
             <TabsTrigger 
               value="storage"
               className="data-[state=active]:bg-green-600 data-[state=active]:text-white px-6 py-2"
             >
-              Storage Map
+              Varastokartta
             </TabsTrigger>
           </TabsList>
 

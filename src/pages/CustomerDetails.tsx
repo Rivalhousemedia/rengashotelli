@@ -27,10 +27,10 @@ export default function CustomerDetails() {
     mutationFn: (data: Partial<Customer>) => updateCustomer(id as string, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['customer', id] });
-      toast.success("Customer information updated successfully");
+      toast.success("Asiakkaan tiedot päivitetty onnistuneesti");
     },
     onError: () => {
-      toast.error("Failed to update customer information");
+      toast.error("Asiakkaan tietojen päivitys epäonnistui");
     }
   });
 
@@ -47,7 +47,7 @@ export default function CustomerDetails() {
       printWindow.document.write(`
         <html>
           <head>
-            <title>Customer QR Code</title>
+            <title>Asiakkaan QR-koodi</title>
             <style>
               @media print {
                 body { margin: 0; }
@@ -79,8 +79,8 @@ export default function CustomerDetails() {
     }
   };
 
-  if (isLoading) return <div>Loading...</div>;
-  if (!customer) return <div>Customer not found</div>;
+  if (isLoading) return <div>Ladataan...</div>;
+  if (!customer) return <div>Asiakasta ei löytynyt</div>;
 
   const locationCode = customer.storageLocation ? 
     `H${customer.storageLocation.hotel}-${customer.storageLocation.section}-${customer.storageLocation.shelf}` : 
@@ -93,13 +93,13 @@ export default function CustomerDetails() {
         onClick={() => navigate(-1)}
         className="mb-4"
       >
-        Back
+        Takaisin
       </Button>
       
       <div className="space-y-6 max-w-2xl mx-auto">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="name">Customer Name</Label>
+            <Label htmlFor="name">Asiakkaan nimi</Label>
             <Input
               id="name"
               defaultValue={customer.name}
@@ -109,7 +109,7 @@ export default function CustomerDetails() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="licensePlate">License Plate</Label>
+            <Label htmlFor="licensePlate">Rekisterinumero</Label>
             <Input
               id="licensePlate"
               defaultValue={customer.licensePlate}
@@ -119,7 +119,7 @@ export default function CustomerDetails() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="summerTireSize">Summer Tire Size</Label>
+            <Label htmlFor="summerTireSize">Kesärenkaiden koko</Label>
             <Input
               id="summerTireSize"
               defaultValue={customer.summerTireSize}
@@ -129,7 +129,7 @@ export default function CustomerDetails() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="winterTireSize">Winter Tire Size</Label>
+            <Label htmlFor="winterTireSize">Talvirenkaiden koko</Label>
             <Input
               id="winterTireSize"
               defaultValue={customer.winterTireSize}
@@ -139,7 +139,7 @@ export default function CustomerDetails() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone</Label>
+            <Label htmlFor="phone">Puhelin</Label>
             <Input
               id="phone"
               defaultValue={customer.phone}
@@ -149,7 +149,7 @@ export default function CustomerDetails() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">Sähköposti</Label>
             <Input
               id="email"
               defaultValue={customer.email}
@@ -163,12 +163,12 @@ export default function CustomerDetails() {
             className="w-full bg-green-600 hover:bg-green-700 text-white font-medium"
             disabled={updateMutation.isPending}
           >
-            {updateMutation.isPending ? "Updating..." : "Update Customer"}
+            {updateMutation.isPending ? "Päivitetään..." : "Päivitä asiakas"}
           </Button>
         </form>
 
         <div className="p-6 bg-gray-900/50 backdrop-blur-sm rounded-lg border border-gray-800 shadow">
-          <div id="customer-qr-details" className="mb-4">
+          <div id="customer-qr-details">
             <QRCode customer={customer} selectedLocation={locationCode} />
           </div>
           <Button 
@@ -176,7 +176,7 @@ export default function CustomerDetails() {
             className="w-full bg-green-600 hover:bg-green-700 text-white font-medium"
           >
             <QrCode className="w-4 h-4 mr-2" />
-            Print Customer QR
+            Tulosta asiakkaan QR
           </Button>
         </div>
       </div>
