@@ -11,10 +11,10 @@ export default function QRCode({ customer, selectedLocation }: { customer: Custo
   });
 
   const getTireInfo = () => {
-    if (customer.summerTireSize) {
+    if (customer.summerTireSize && customer.summerTireSize.length > 0) {
       return `Summer tires ${customer.summerTireSize}`;
     }
-    if (customer.winterTireSize) {
+    if (customer.winterTireSize && customer.winterTireSize.length > 0) {
       return `Winter tires ${customer.winterTireSize}`;
     }
     return '';
