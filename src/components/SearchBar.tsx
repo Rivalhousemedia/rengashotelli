@@ -19,7 +19,18 @@ export default function SearchBar() {
     setIsSearching(true);
     try {
       const results = await searchCustomers(query);
-      setSearchResults(results);
+      // Transform the results to match the Customer type
+      const transformedResults: Customer[] = results.map(result => ({
+        id: result.id,
+        name: result.name,
+        licensePlate: result.licensePlate,
+        summerTireSize: result.summerTireSize || '',
+        winterTireSize: result.winterTireSize || '',
+        phone: result.phone || '',
+        email: result.email || '',
+        status: 'active',
+      }));
+      setSearchResults(transformedResults);
     } catch (error) {
       console.error('Search error:', error);
     } finally {
@@ -53,7 +64,9 @@ export default function SearchBar() {
                   <span className="text-muted-foreground">{customer.licensePlate}</span>
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  Tire Size: {customer.tireSize}
+                  Summer Tire Size: {customer.summerTireSize}
+                  <br />
+                  Winter Tire Size: {customer.winterTireSize}
                 </div>
               </div>
             </CardContent>

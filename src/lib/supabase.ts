@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-import type { Customer, StorageLocation } from './supabase-types'
+import type { Customer, StorageLocation } from './types'
 
 const supabaseUrl = 'https://asvbflcyaspdrhihjmcg.supabase.co'
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzdmJmbGN5YXNwZHJoaWhqbWNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE1MzA0NzEsImV4cCI6MjA0NzEwNjQ3MX0.4J3SmtC2C0xzTJO02e4LH8fI2HEwgEHMwsC42B1gK1k'
@@ -37,7 +37,11 @@ export async function searchCustomers(query: string) {
     id: customer.id,
     name: customer.name,
     licensePlate: customer.license_plate,
-    tireSize: customer.tire_size,
+    summerTireSize: customer.summer_tire_size,
+    winterTireSize: customer.winter_tire_size,
+    phone: customer.phone,
+    email: customer.email,
+    status: customer.status as 'active' | 'interim' | 'inactive',
   }))
 }
 

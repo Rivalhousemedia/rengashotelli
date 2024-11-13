@@ -21,7 +21,7 @@ export default function StorageMap({ selectedLocation }: { selectedLocation?: St
                     className={`p-2 border rounded ${
                       selectedLocation?.hotel === hotel &&
                       selectedLocation?.section === section &&
-                      selectedLocation?.shelf === shelf
+                      selectedLocation?.shelf === shelf.toString()
                         ? "bg-blue-100 border-blue-500"
                         : "hover:bg-gray-50"
                     }`}
