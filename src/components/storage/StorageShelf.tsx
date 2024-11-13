@@ -2,8 +2,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Printer } from "lucide-react";
+import { Printer, QrCode } from "lucide-react";
 import LocationQRCode from "../LocationQRCode";
+import QRCode from "../QRCode";
 import type { Customer } from "@/lib/types";
 import { Link } from "react-router-dom";
 
@@ -30,6 +31,35 @@ export default function StorageShelf({
 }: StorageShelfProps) {
   const isSelected = selectedCustomer?.id === customer?.id;
   const locationCode = `H${hotel}-${section}-${shelf}`;
+
+  const handlePrintCustomerQR = () => {
+    const printWindow = window.open('', '_blank');
+    if (printWindow && customer) {
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Customer QR Code</title>
+          </head>
+          <body>
+            <div id="print-content"></div>
+          </body>
+        </html>
+      `);
+      
+      const content = document.createElement('div');
+      content.innerHTML = `
+        <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+          ${document.getElementById(`customer-qr-${customer.id}`)?.innerHTML}
+        </div>
+      `;
+      
+      printWindow.document.getElementById('print-content')?.appendChild(content);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close();
+    }
+  };
 
   return (
     <Popover>
@@ -70,7 +100,7 @@ export default function StorageShelf({
                     className="mt-4 w-full"
                     onClick={() => onPrintQRCode(hotel, section, shelf)}
                   >
-                    Print QR Code
+                    Print Location QR Code
                   </Button>
                 </DialogContent>
               </Dialog>
@@ -126,6 +156,17 @@ export default function StorageShelf({
                   Edit Customer
                 </Button>
               </Link>
+              <div id={`customer-qr-${customer.id}`} className="hidden">
+                <QRCode customer={customer} selectedLocation={locationCode} />
+              </div>
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={handlePrintCustomerQR}
+              >
+                <QrCode className="w-4 h-4 mr-2" />
+                Print Customer QR
+              </Button>
             </div>
           </div>
         </PopoverContent>
