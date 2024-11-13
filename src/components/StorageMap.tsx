@@ -32,14 +32,18 @@ export default function StorageMap({ selectedCustomer, onLocationSelect }: Stora
   });
 
   const assignLocation = useMutation({
-    mutationFn: ({ customerId, location }: { customerId: string, location: Omit<StorageLocation, 'id' | 'created_at'> }) => 
-      assignStorageLocation(customerId, location),
-    onSuccess: () => {
+    mutationFn: ({ customerId, location }: { customerId: string, location: Omit<StorageLocation, 'id' | 'created_at'> }) => {
+      console.log("Assigning location:", { customerId, location });
+      return assignStorageLocation(customerId, location);
+    },
+    onSuccess: (data) => {
+      console.log("Assignment successful, response:", data);
       queryClient.invalidateQueries({ queryKey: ['customers-locations'] });
       toast.success('Varastopaikka määritetty onnistuneesti');
       setIsDialogOpen(false);
     },
-    onError: () => {
+    onError: (error) => {
+      console.error("Assignment failed:", error);
       toast.error('Varastopaikan määritys epäonnistui');
     }
   });
@@ -57,15 +61,19 @@ export default function StorageMap({ selectedCustomer, onLocationSelect }: Stora
   });
 
   const getCustomerAtLocation = (hotel: number, section: string, shelf: number) => {
-    return customers?.find(customer => 
+    const customer = customers?.find(customer => 
       customer.storageLocation?.hotel === hotel &&
       customer.storageLocation?.section === section &&
       customer.storageLocation?.shelf === shelf.toString()
     );
+    console.log("Customer at location:", { hotel, section, shelf, customer });
+    return customer;
   };
 
   const handleLocationClick = async (hotel: number, section: string, shelf: number) => {
+    console.log("Location clicked:", { hotel, section, shelf });
     if (selectedCustomer) {
+      console.log("Selected customer:", selectedCustomer);
       const existingCustomer = getCustomerAtLocation(hotel, section, shelf);
       if (existingCustomer) {
         toast.error('Tämä paikka on jo varattu');
@@ -93,6 +101,7 @@ export default function StorageMap({ selectedCustomer, onLocationSelect }: Stora
   };
 
   const handleAssignExistingCustomer = async (customer: Customer) => {
+    console.log("Assigning existing customer:", { customer, selectedLocation });
     if (!selectedLocation) return;
 
     await assignLocation.mutateAsync({
@@ -108,7 +117,6 @@ export default function StorageMap({ selectedCustomer, onLocationSelect }: Stora
   };
 
   const handlePrintQRCode = (hotel: number, section: string, shelf: number) => {
-    // Print functionality will be handled by the StorageHotel component
     console.log("Print QR code for location:", hotel, section, shelf);
   };
 

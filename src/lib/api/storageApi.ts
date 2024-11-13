@@ -2,6 +2,7 @@ import { supabase } from './supabaseClient'
 import type { StorageLocation } from '../types'
 
 export async function getCustomersWithLocations() {
+  console.log("Fetching customers with locations");
   const { data, error } = await supabase
     .from('customers')
     .select(`
@@ -28,7 +29,7 @@ export async function getCustomersWithLocations() {
     throw error;
   }
 
-  return data.map(customer => ({
+  const mappedData = data.map(customer => ({
     id: customer.id,
     name: customer.name,
     licensePlate: customer.license_plate,
@@ -45,13 +46,19 @@ export async function getCustomersWithLocations() {
       position: customer.storage_locations[0]?.position,
     } : undefined
   }));
+
+  console.log("Fetched and mapped customers:", mappedData);
+  return mappedData;
 }
 
 export async function assignStorageLocation(
   customerId: string,
   location: Omit<StorageLocation, 'id' | 'created_at'> | null
 ) {
+  console.log("Assigning storage location:", { customerId, location });
+
   if (!location) {
+    console.log("Removing storage location for customer:", customerId);
     const { error } = await supabase
       .from('storage_locations')
       .delete()
@@ -74,7 +81,10 @@ export async function assignStorageLocation(
     throw fetchError;
   }
 
+  console.log("Existing locations for customer:", existingLocations);
+
   if (existingLocations && existingLocations.length > 0) {
+    console.log("Updating existing location");
     const { data: locationData, error: locationError } = await supabase
       .from('storage_locations')
       .update({
@@ -92,9 +102,11 @@ export async function assignStorageLocation(
       throw locationError;
     }
 
+    console.log("Location updated successfully:", locationData);
     return locationData[0];
   }
 
+  console.log("Creating new location");
   const { data: locationData, error: locationError } = await supabase
     .from('storage_locations')
     .insert([{
@@ -112,5 +124,6 @@ export async function assignStorageLocation(
     throw locationError;
   }
 
+  console.log("New location created successfully:", locationData);
   return locationData[0];
 }
