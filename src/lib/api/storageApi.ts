@@ -13,7 +13,8 @@ export async function getCustomersWithLocations() {
         level,
         position
       )
-    `);
+    `)
+    .order('created_at', { ascending: false });
 
   if (error) {
     console.error('Error fetching customers with locations:', error);
@@ -56,10 +57,15 @@ export async function assignStorageLocation(
     return null;
   }
 
-  const { data: existingLocations } = await supabase
+  const { data: existingLocations, error: fetchError } = await supabase
     .from('storage_locations')
     .select()
     .eq('customer_id', customerId);
+
+  if (fetchError) {
+    console.error('Error fetching existing locations:', fetchError);
+    throw fetchError;
+  }
 
   if (existingLocations && existingLocations.length > 0) {
     const { data: locationData, error: locationError } = await supabase

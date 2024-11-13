@@ -14,9 +14,12 @@ export default function StorageMap({ selectedCustomer }: { selectedCustomer?: Cu
   const shelves = [1, 2, 3, 4];
   const queryClient = useQueryClient();
 
-  const { data: customers } = useQuery({
+  const { data: customers = [] } = useQuery({
     queryKey: ['customers-locations'],
-    queryFn: getCustomersWithLocations
+    queryFn: getCustomersWithLocations,
+    enabled: true,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true
   });
 
   const assignLocation = useMutation({
@@ -55,7 +58,7 @@ export default function StorageMap({ selectedCustomer }: { selectedCustomer?: Cu
     return `H${hotel}-${section}-${shelf}`;
   };
 
-  const handleLocationClick = (hotel: number, section: string, shelf: number) => {
+  const handleLocationClick = async (hotel: number, section: string, shelf: number) => {
     if (!selectedCustomer) return;
     
     const existingCustomer = getCustomerAtLocation(hotel, section, shelf);
@@ -64,7 +67,7 @@ export default function StorageMap({ selectedCustomer }: { selectedCustomer?: Cu
       return;
     }
 
-    assignLocation.mutate({
+    await assignLocation.mutateAsync({
       customerId: selectedCustomer.id,
       location: {
         hotel,
