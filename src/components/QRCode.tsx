@@ -6,18 +6,18 @@ export default function QRCode({ customer, selectedLocation }: { customer: Custo
     id: customer.id,
     name: customer.name,
     licensePlate: customer.licensePlate,
-    summerTireSize: customer.summer_tire_size,
-    winterTireSize: customer.winter_tire_size,
+    summerTireSize: customer.summerTireSize,
+    winterTireSize: customer.winterTireSize,
     location: selectedLocation
   });
 
   const getTireInfo = () => {
-    console.log("Tire sizes:", customer.summer_tire_size, customer.winter_tire_size); // Debug log
-    if (customer.summer_tire_size && customer.summer_tire_size.length > 0) {
-      return `Summer tires ${customer.summer_tire_size}`;
+    console.log("Tire sizes:", customer.summerTireSize, customer.winterTireSize); // Debug log
+    if (customer.summerTireSize && customer.summerTireSize.length > 0) {
+      return `Summer tires ${customer.summerTireSize}`;
     }
-    if (customer.winter_tire_size && customer.winter_tire_size.length > 0) {
-      return `Winter tires ${customer.winter_tire_size}`;
+    if (customer.winterTireSize && customer.winterTireSize.length > 0) {
+      return `Winter tires ${customer.winterTireSize}`;
     }
     return '';
   };
