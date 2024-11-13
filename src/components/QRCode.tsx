@@ -22,14 +22,14 @@ export default function QRCode({ customer, selectedLocation }: { customer: Custo
 
   return (
     <div className="p-4 bg-white rounded-3xl shadow print:shadow-none w-[400px]">
-      <div className="flex items-center justify-between gap-4">
-        <div className="space-y-1">
-          <p className="font-bold text-2xl text-black">{customer.name}</p>
-          <p className="text-lg text-gray-600">{customer.licensePlate}</p>
-          <p className="text-xl font-bold text-gray-600">{selectedLocation || 'Not assigned'}</p>
-          <p className="text-lg text-gray-600">{getTireInfo()}</p>
+      <div className="flex items-start justify-between gap-4">
+        <div className="space-y-1 flex-1 min-w-0">
+          <p className="font-bold text-2xl text-black truncate">{customer.name}</p>
+          <p className="text-lg text-gray-600 truncate">{customer.licensePlate}</p>
+          <p className="text-xl font-bold text-gray-600 break-words">{selectedLocation || 'Not assigned'}</p>
+          <p className="text-lg text-gray-600 break-words">{getTireInfo()}</p>
         </div>
-        <QRCodeSVG value={qrData} size={100} />
+        <QRCodeSVG value={qrData} size={100} className="flex-shrink-0" />
       </div>
     </div>
   );
