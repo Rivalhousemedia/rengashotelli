@@ -35,7 +35,17 @@ export async function createCustomer(customer: Omit<Customer, 'id' | 'created_at
     throw error
   }
   
-  return data
+  // Transform the data from snake_case to camelCase
+  return {
+    id: data.id,
+    name: data.name,
+    licensePlate: data.license_plate,
+    summerTireSize: data.summer_tire_size,
+    winterTireSize: data.winter_tire_size,
+    phone: data.phone,
+    email: data.email,
+    status: data.status as 'active' | 'interim' | 'inactive'
+  }
 }
 
 export async function searchCustomers(query: string) {
