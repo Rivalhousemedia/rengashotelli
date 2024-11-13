@@ -4,7 +4,11 @@ CREATE TABLE customers (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
   name TEXT NOT NULL,
   license_plate TEXT NOT NULL,
-  tire_size TEXT NOT NULL
+  summer_tire_size TEXT NOT NULL,
+  winter_tire_size TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  email TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'active'
 );
 
 -- Create storage_locations table
@@ -13,15 +17,13 @@ CREATE TABLE storage_locations (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
   hotel INTEGER NOT NULL,
   section TEXT NOT NULL,
-  shelf INTEGER NOT NULL,
+  shelf TEXT NOT NULL,
+  level INTEGER NOT NULL,
   position INTEGER NOT NULL,
   customer_id UUID UNIQUE REFERENCES customers(id)
 );
 
--- Add the storage_location_id to customers table after storage_locations exists
-ALTER TABLE customers 
-ADD COLUMN storage_location_id UUID REFERENCES storage_locations(id);
-
 -- Add indexes for better query performance
 CREATE INDEX idx_customers_name ON customers(name);
 CREATE INDEX idx_customers_license_plate ON customers(license_plate);
+CREATE INDEX idx_customers_status ON customers(status);
