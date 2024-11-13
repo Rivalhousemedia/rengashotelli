@@ -6,6 +6,9 @@ import { toast } from "sonner";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import LocationQRCode from "./LocationQRCode";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Printer } from "lucide-react";
 
 interface StorageMapProps {
   selectedCustomer?: Customer;
@@ -90,6 +93,35 @@ export default function StorageMap({ selectedCustomer, onLocationSelect }: Stora
   const handleRemoveCustomer = (customerId: string) => {
     removeFromLocation.mutate(customerId);
   };
+
+  const handlePrintQRCode = (hotel: number, section: string, shelf: number) => {
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Location QR Code</title>
+          </head>
+          <body>
+            <div id="print-content"></div>
+          </body>
+        </html>
+      `);
+      
+      const content = document.createElement('div');
+      content.innerHTML = `
+        <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+          ${document.getElementById(`location-qr-${hotel}-${section}-${shelf}`)?.innerHTML}
+        </div>
+      `;
+      
+      printWindow.document.getElementById('print-content')?.appendChild(content);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close();
+    }
+  };
   
   return (
     <div className="grid grid-cols-2 gap-6">
@@ -118,7 +150,36 @@ export default function StorageMap({ selectedCustomer, onLocationSelect }: Stora
                           }`}
                         >
                           <div className="text-sm">
-                            <div className="text-gray-300">{locationCode}</div>
+                            <div className="flex justify-between items-center">
+                              <span className="text-gray-300">{locationCode}</span>
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="icon"
+                                    className="h-6 w-6"
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    <Printer className="h-4 w-4" />
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent>
+                                  <div id={`location-qr-${hotel}-${section}-${shelf}`}>
+                                    <LocationQRCode 
+                                      hotel={hotel} 
+                                      section={section} 
+                                      shelf={shelf} 
+                                    />
+                                  </div>
+                                  <Button 
+                                    className="mt-4 w-full"
+                                    onClick={() => handlePrintQRCode(hotel, section, shelf)}
+                                  >
+                                    Print QR Code
+                                  </Button>
+                                </DialogContent>
+                              </Dialog>
+                            </div>
                             {customer ? (
                               <div className="font-medium text-green-400">{customer.licensePlate}</div>
                             ) : (
