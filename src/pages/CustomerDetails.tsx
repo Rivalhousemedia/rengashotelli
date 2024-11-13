@@ -160,7 +160,7 @@ export default function CustomerDetails() {
 
           <Button 
             type="submit" 
-            className="w-full bg-green-600 hover:bg-green-700"
+            className="w-full bg-green-600 hover:bg-green-700 text-white font-medium"
             disabled={updateMutation.isPending}
           >
             {updateMutation.isPending ? "Updating..." : "Update Customer"}
@@ -173,7 +173,7 @@ export default function CustomerDetails() {
           </div>
           <Button 
             onClick={handlePrintQR}
-            className="w-full bg-green-600 hover:bg-green-700"
+            className="w-full bg-green-600 hover:bg-green-700 text-white font-medium"
           >
             <QrCode className="w-4 h-4 mr-2" />
             Print Customer QR

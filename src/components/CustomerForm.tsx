@@ -133,7 +133,7 @@ export default function CustomerForm({ preselectedLocation, onSuccess }: Custome
           />
         </div>
 
-        <Button type="submit" className="w-full bg-green-600 hover:bg-green-700" disabled={isLoading}>
+        <Button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white font-medium" disabled={isLoading}>
           {isLoading ? "Saving..." : "Save Customer"}
         </Button>
       </form>
