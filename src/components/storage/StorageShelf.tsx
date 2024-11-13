@@ -97,7 +97,7 @@ export default function StorageShelf({
                     <Printer className="h-4 w-4" />
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="flex items-center justify-center">
+                <DialogContent>
                   <div id={`location-qr-${hotel}-${section}-${shelf}`}>
                     <LocationQRCode 
                       hotel={hotel} 
