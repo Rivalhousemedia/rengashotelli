@@ -28,8 +28,17 @@ export async function searchCustomers(query: string) {
     .or(`name.ilike.%${query}%,license_plate.ilike.%${query}%`)
     .limit(10)
 
-  if (error) throw error
-  return data
+  if (error) {
+    console.error('Error searching customers:', error)
+    throw error
+  }
+
+  return data.map(customer => ({
+    id: customer.id,
+    name: customer.name,
+    licensePlate: customer.license_plate,
+    tireSize: customer.tire_size,
+  }))
 }
 
 export async function updateStorageLocation(

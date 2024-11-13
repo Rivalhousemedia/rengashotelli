@@ -23,10 +23,7 @@ export default function Index() {
           </TabsContent>
 
           <TabsContent value="search" className="space-y-6">
-            <SearchBar onSearch={(query) => console.log(query)} />
-            <div className="grid gap-4">
-              {/* Search results would go here */}
-            </div>
+            <SearchBar />
           </TabsContent>
 
           <TabsContent value="storage" className="space-y-6">
