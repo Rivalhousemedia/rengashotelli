@@ -8,7 +8,7 @@ export default function Navigation() {
         <div className="flex justify-between h-16 items-center">
           <div className="flex items-center space-x-4">
             <img 
-              src="/rengaspalvelu-logo.png" 
+              src="https://artonrengaspalvelu.fi/wp-content/uploads/2024/01/artonrengaslogo.png" 
               alt="Rengaspalvelu" 
               className="h-8"
             />
