@@ -1,13 +1,8 @@
 import { createClient } from '@supabase/supabase-js'
 import type { Customer, StorageLocation } from './supabase-types'
 
-// Provide default values for development - replace these with your actual Supabase project values
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co'
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'your-anon-key'
-
-if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
-  console.warn('Supabase credentials not found in environment variables. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.')
-}
+const supabaseUrl = 'https://asvbflcyaspdrhihjmcg.supabase.co'
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzdmJmbGN5YXNwZHJoaWhqbWNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE1MzA0NzEsImV4cCI6MjA0NzEwNjQ3MX0.4J3SmtC2C0xzTJO02e4LH8fI2HEwgEHMwsC42B1gK1k'
 
 export const supabase = createClient(supabaseUrl, supabaseKey)
 
