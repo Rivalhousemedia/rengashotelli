@@ -34,21 +34,31 @@ export default function CustomerSearchDialog({
     
     setIsSearching(true);
     try {
-      console.log("Searching with query:", query);
+      console.log("Starting search with query:", query);
       const results = await searchCustomers(query);
-      console.log("Raw search results:", results);
-      console.log("First result storageLocation:", results[0]?.storageLocation);
+      console.log("API returned results:", results);
+      
+      // Debug each result's storage location
+      results.forEach((customer, index) => {
+        console.log(`Customer ${index + 1}:`, {
+          name: customer.name,
+          id: customer.id,
+          hasStorageLocation: !!customer.storageLocation,
+          storageLocation: customer.storageLocation
+        });
+      });
       
       // Filter out customers that have an active storage location
       const availableCustomers = results.filter(customer => {
         const hasNoLocation = !customer.storageLocation;
-        console.log("Customer:", customer.name);
-        console.log("Has no location:", hasNoLocation);
-        console.log("Storage location:", customer.storageLocation);
+        console.log(`Filtering ${customer.name}:`, {
+          hasNoLocation,
+          storageLocationValue: customer.storageLocation
+        });
         return hasNoLocation;
       });
       
-      console.log("Filtered available customers:", availableCustomers);
+      console.log("Final filtered customers:", availableCustomers);
       setSearchResults(availableCustomers);
     } catch (error) {
       console.error('Search error:', error);
