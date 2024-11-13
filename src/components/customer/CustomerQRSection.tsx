@@ -26,6 +26,7 @@ export default function CustomerQRSection({ customer, locationCode, onPrintQR }:
   console.log("CustomerQRSection - Computed location code:", {
     providedLocationCode: locationCode,
     computedFromStorage: displayLocationCode,
+    finalDisplay: displayLocationCode || 'Not assigned'
   });
 
   return (
