@@ -7,6 +7,17 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 export const supabase = createClient(supabaseUrl, supabaseKey)
 
 export async function createCustomer(customer: Omit<Customer, 'id' | 'created_at'>) {
+  // First check if customer already exists
+  const { data: existingCustomer } = await supabase
+    .from('customers')
+    .select()
+    .or(`name.eq.${customer.name},license_plate.eq.${customer.licensePlate},phone.eq.${customer.phone},email.eq.${customer.email}`)
+    .single();
+
+  if (existingCustomer) {
+    throw new Error('A customer with the same name, license plate, phone, or email already exists');
+  }
+
   const { data, error } = await supabase
     .from('customers')
     .insert([{
@@ -74,15 +85,14 @@ export async function getCustomersWithLocations() {
     .from('customers')
     .select(`
       *,
-      storage_locations!storage_locations_customer_id_fkey (
+      storage_locations (
         hotel,
         section,
         shelf,
         level,
         position
       )
-    `)
-    .not('storage_locations.id', 'is', null);
+    `);
 
   if (error) {
     console.error('Error fetching customers with locations:', error);
