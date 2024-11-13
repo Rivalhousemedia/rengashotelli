@@ -9,13 +9,20 @@ export default function QRCode({ customer, selectedLocation }: { customer: Custo
     storageLocationDetails: customer?.storageLocation
   });
 
+  // Only create location code if we have all required values
+  const locationFromStorage = customer.storageLocation ? 
+    (customer.storageLocation.hotel && customer.storageLocation.section && customer.storageLocation.shelf) ?
+      `H${customer.storageLocation.hotel}-${customer.storageLocation.section}-${customer.storageLocation.shelf}` :
+      null :
+    null;
+
+  console.log("QRCode - Location from storage:", locationFromStorage);
+
   const qrData = JSON.stringify({
     id: customer.id,
     name: customer.name,
     licensePlate: customer.licensePlate,
-    location: selectedLocation || (customer.storageLocation ? 
-      `H${customer.storageLocation.hotel}-${customer.storageLocation.section}-${customer.storageLocation.shelf}` : 
-      null)
+    location: selectedLocation || locationFromStorage
   });
 
   const getTireInfo = () => {
@@ -28,10 +35,8 @@ export default function QRCode({ customer, selectedLocation }: { customer: Custo
     return '';
   };
 
-  // Determine the location display text
-  const locationDisplay = selectedLocation || (customer.storageLocation ? 
-    `H${customer.storageLocation.hotel}-${customer.storageLocation.section}-${customer.storageLocation.shelf}` : 
-    'Not assigned');
+  // Determine the location display text with proper validation
+  const locationDisplay = selectedLocation || locationFromStorage || 'Not assigned';
 
   console.log("QRCode component - Final location display:", locationDisplay);
 

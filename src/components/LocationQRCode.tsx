@@ -7,9 +7,12 @@ interface LocationQRCodeProps {
 }
 
 export default function LocationQRCode({ hotel, section, shelf }: LocationQRCodeProps) {
-  // Ensure all values are defined before creating the location code
-  if (typeof hotel !== 'number' || !section || typeof shelf !== 'number') {
-    console.error("LocationQRCode - Invalid props received:", { hotel, section, shelf });
+  // Ensure all values are defined and valid before creating the location code
+  if (!hotel || !section || !shelf || 
+      typeof hotel !== 'number' || 
+      typeof section !== 'string' || 
+      typeof shelf !== 'number') {
+    console.error("LocationQRCode - Invalid or missing props:", { hotel, section, shelf });
     return null;
   }
 
