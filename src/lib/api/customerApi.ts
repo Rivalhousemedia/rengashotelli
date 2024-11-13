@@ -49,7 +49,9 @@ export async function createCustomer(customer: Omit<Customer, 'id' | 'created_at
 }
 
 export async function searchCustomers(query: string) {
-  const { data, error } = await supabase
+  const locationMatch = query.match(/H(\d+)-([A-Z])-(\d+)/i);
+  
+  let supabaseQuery = supabase
     .from('customers')
     .select(`
       *,
@@ -60,13 +62,27 @@ export async function searchCustomers(query: string) {
         level,
         position
       )
-    `)
-    .or(`name.ilike.%${query}%,license_plate.ilike.%${query}%`)
-    .limit(10)
+    `);
+
+  if (locationMatch) {
+    // If the query matches a location code format (e.g., H1-A-1)
+    const [, hotel, section, shelf] = locationMatch;
+    supabaseQuery = supabaseQuery
+      .eq('storage_locations.hotel', hotel)
+      .eq('storage_locations.section', section)
+      .eq('storage_locations.shelf', shelf);
+  } else {
+    // Regular search by name or license plate
+    supabaseQuery = supabaseQuery.or(
+      `name.ilike.%${query}%,license_plate.ilike.%${query}%`
+    );
+  }
+
+  const { data, error } = await supabaseQuery.limit(10);
 
   if (error) {
-    console.error('Error searching customers:', error)
-    throw error
+    console.error('Error searching customers:', error);
+    throw error;
   }
 
   return data.map(customer => ({
@@ -85,5 +101,5 @@ export async function searchCustomers(query: string) {
       level: customer.storage_locations.level,
       position: customer.storage_locations.position,
     } : undefined
-  }))
+  }));
 }

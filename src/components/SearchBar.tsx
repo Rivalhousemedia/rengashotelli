@@ -1,14 +1,18 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+import { Search, Camera } from "lucide-react";
 import { useState } from "react";
 import { searchCustomers } from "@/lib/api/customerApi";
 import { Card, CardContent } from "@/components/ui/card";
 import { Customer } from "@/lib/types";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { QrReader } from "react-qr-reader";
+import { toast } from "sonner";
 
 export default function SearchBar() {
   const [searchResults, setSearchResults] = useState<Customer[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [isScanning, setIsScanning] = useState(false);
 
   const handleSearch = async (query: string) => {
     if (query.length < 1) {
@@ -22,15 +26,32 @@ export default function SearchBar() {
       setSearchResults(results);
     } catch (error) {
       console.error('Search error:', error);
+      toast.error("Failed to search customers");
     } finally {
       setIsSearching(false);
+    }
+  };
+
+  const handleQrScan = (data: string | null) => {
+    if (data) {
+      try {
+        const scannedData = JSON.parse(data);
+        if (scannedData.hotel && scannedData.section && scannedData.shelf) {
+          const locationCode = `H${scannedData.hotel}-${scannedData.section}-${scannedData.shelf}`;
+          handleSearch(locationCode);
+          setIsScanning(false);
+          toast.success("QR code scanned successfully");
+        }
+      } catch (error) {
+        console.error('QR scan error:', error);
+        toast.error("Invalid QR code");
+      }
     }
   };
 
   const formatLocationCode = (customer: Customer) => {
     if (!customer.storageLocation) return 'Not assigned';
     const { hotel, section, shelf } = customer.storageLocation;
-    // Convert values to string and check if they exist
     const hotelStr = hotel?.toString();
     const sectionStr = section?.toString();
     const shelfStr = shelf?.toString();
@@ -46,11 +67,27 @@ export default function SearchBar() {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
           <Input
             className="pl-10"
-            placeholder="Search by name or license plate..."
+            placeholder="Search by name, license plate, or location code (e.g. H1-A-1)..."
             onChange={(e) => handleSearch(e.target.value)}
           />
         </div>
-        <Button variant="outline">Search</Button>
+        <Dialog open={isScanning} onOpenChange={setIsScanning}>
+          <DialogTrigger asChild>
+            <Button variant="outline">
+              <Camera className="h-4 w-4 mr-2" />
+              Scan QR
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <div className="w-full max-w-sm mx-auto">
+              <QrReader
+                constraints={{ facingMode: 'environment' }}
+                onResult={(result) => result && handleQrScan(result.getText())}
+                className="w-full"
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {isSearching && <p>Searching...</p>}
