@@ -164,7 +164,7 @@ export default function CustomerForm() {
                 <p className="text-3xl font-bold text-green-500">{selectedLocation}</p>
               </div>
             )}
-            <QRCode customer={savedCustomer} />
+            <QRCode customer={savedCustomer} selectedLocation={selectedLocation} />
             <Button 
               onClick={() => window.print()} 
               className="mt-4 w-full bg-green-600 hover:bg-green-700"
