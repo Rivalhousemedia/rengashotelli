@@ -8,7 +8,6 @@ export default function QRCode({ customer, selectedLocation }: { customer: Custo
     licensePlate: customer.licensePlate,
     summerTireSize: customer.summerTireSize,
     winterTireSize: customer.winterTireSize,
-    location: selectedLocation
   });
 
   const getTireInfo = () => {
