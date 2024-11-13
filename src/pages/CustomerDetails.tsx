@@ -50,6 +50,46 @@ export default function CustomerDetails() {
     setSelectedLocation(newLocation);
   };
 
+  const handlePrintQR = () => {
+    if (!customer) return;
+    
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Asiakkaan QR-koodi</title>
+            <style>
+              @media print {
+                body { margin: 0; }
+                .print-content { padding: 20px; }
+              }
+            </style>
+          </head>
+          <body>
+            <div class="print-content"></div>
+          </body>
+        </html>
+      `);
+      
+      const content = document.createElement('div');
+      content.innerHTML = `
+        <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+          ${document.getElementById('customer-qr-details')?.innerHTML || ''}
+        </div>
+      `;
+      
+      const printContent = printWindow.document.querySelector('.print-content');
+      if (printContent) {
+        printContent.appendChild(content);
+      }
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close();
+    }
+  };
+
   if (isLoading) return <div>Ladataan...</div>;
   if (!customer) return <div>Asiakasta ei löytynyt</div>;
 
