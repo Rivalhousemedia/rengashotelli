@@ -103,3 +103,63 @@ export async function searchCustomers(query: string) {
     } : undefined
   }));
 }
+
+export async function getCustomerById(id: string) {
+  const { data, error } = await supabase
+    .from('customers')
+    .select(`
+      *,
+      storage_locations!storage_locations_customer_id_fkey (
+        hotel,
+        section,
+        shelf,
+        level,
+        position
+      )
+    `)
+    .eq('id', id)
+    .single();
+
+  if (error) {
+    console.error('Error fetching customer:', error);
+    throw error;
+  }
+
+  return {
+    id: data.id,
+    name: data.name,
+    licensePlate: data.license_plate,
+    summerTireSize: data.summer_tire_size,
+    winterTireSize: data.winter_tire_size,
+    phone: data.phone,
+    email: data.email,
+    status: data.status as 'active' | 'interim' | 'inactive',
+    storageLocation: data.storage_locations ? {
+      hotel: data.storage_locations.hotel,
+      section: data.storage_locations.section,
+      shelf: data.storage_locations.shelf,
+      level: data.storage_locations.level,
+      position: data.storage_locations.position,
+    } : undefined
+  };
+}
+
+export async function updateCustomer(id: string, customer: Partial<Customer>) {
+  const { error } = await supabase
+    .from('customers')
+    .update({
+      name: customer.name,
+      license_plate: customer.licensePlate,
+      summer_tire_size: customer.summerTireSize,
+      winter_tire_size: customer.winterTireSize,
+      phone: customer.phone,
+      email: customer.email,
+      status: customer.status
+    })
+    .eq('id', id);
+
+  if (error) {
+    console.error('Error updating customer:', error);
+    throw error;
+  }
+}

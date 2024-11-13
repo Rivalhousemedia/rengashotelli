@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Printer } from "lucide-react";
 import LocationQRCode from "../LocationQRCode";
 import type { Customer } from "@/lib/types";
+import { Link } from "react-router-dom";
 
 interface StorageShelfProps {
   hotel: number;
@@ -112,13 +113,20 @@ export default function StorageShelf({
                 <div>{customer.email}</div>
               </div>
             </div>
-            <Button 
-              variant="destructive"
-              onClick={() => onRemoveCustomer(customer.id)}
-              className="w-full"
-            >
-              Remove from Location
-            </Button>
+            <div className="space-y-2">
+              <Button 
+                variant="destructive"
+                onClick={() => onRemoveCustomer(customer.id)}
+                className="w-full mb-2"
+              >
+                Remove from Location
+              </Button>
+              <Link to={`/customer/${customer.id}`}>
+                <Button variant="secondary" className="w-full">
+                  Edit Customer
+                </Button>
+              </Link>
+            </div>
           </div>
         </PopoverContent>
       )}

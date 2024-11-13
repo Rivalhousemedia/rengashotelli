@@ -8,6 +8,7 @@ import { Customer } from "@/lib/types";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { QrReader } from "react-qr-reader";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
 
 export default function SearchBar() {
   const [searchResults, setSearchResults] = useState<Customer[]>([]);
@@ -94,23 +95,25 @@ export default function SearchBar() {
       
       <div className="grid gap-4">
         {searchResults.map((customer) => (
-          <Card key={customer.id}>
-            <CardContent className="pt-6">
-              <div className="grid gap-2">
-                <div className="flex justify-between">
-                  <span className="font-semibold">{customer.name}</span>
-                  <span className="text-muted-foreground">{customer.licensePlate}</span>
+          <Link to={`/customer/${customer.id}`} key={customer.id}>
+            <Card className="hover:bg-gray-100/5 transition-colors">
+              <CardContent className="pt-6">
+                <div className="grid gap-2">
+                  <div className="flex justify-between">
+                    <span className="font-semibold">{customer.name}</span>
+                    <span className="text-muted-foreground">{customer.licensePlate}</span>
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    Summer Tire Size: {customer.summerTireSize}
+                    <br />
+                    Winter Tire Size: {customer.winterTireSize}
+                    <br />
+                    Location: {formatLocationCode(customer)}
+                  </div>
                 </div>
-                <div className="text-sm text-muted-foreground">
-                  Summer Tire Size: {customer.summerTireSize}
-                  <br />
-                  Winter Tire Size: {customer.winterTireSize}
-                  <br />
-                  Location: {formatLocationCode(customer)}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </Link>
         ))}
       </div>
     </div>
