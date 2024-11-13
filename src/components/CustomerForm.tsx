@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { createCustomer } from "@/lib/supabase";
 import QRCode from "./QRCode";
 import { Customer } from "@/lib/types";
+import StorageMap from "./StorageMap";
 
 export default function CustomerForm() {
   const [formData, setFormData] = useState<Omit<Customer, 'id' | 'created_at'>>({
@@ -46,7 +47,7 @@ export default function CustomerForm() {
   };
 
   return (
-    <div className="grid md:grid-cols-2 gap-6">
+    <div className="space-y-6">
       <form onSubmit={handleSubmit} className="space-y-6 p-6 bg-white rounded-lg shadow">
         <div className="space-y-2">
           <Label htmlFor="name">Customer Name</Label>
@@ -111,19 +112,27 @@ export default function CustomerForm() {
         </div>
 
         <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? "Saving..." : "Generate QR Code"}
+          {isLoading ? "Saving..." : "Save Customer"}
         </Button>
       </form>
 
       {savedCustomer && (
-        <div className="p-6 bg-white rounded-lg shadow">
-          <QRCode customer={savedCustomer} />
-          <Button 
-            onClick={() => window.print()} 
-            className="mt-4 w-full"
-          >
-            Print Label
-          </Button>
+        <div className="space-y-6">
+          <div className="p-6 bg-white rounded-lg shadow">
+            <QRCode customer={savedCustomer} />
+            <Button 
+              onClick={() => window.print()} 
+              className="mt-4 w-full"
+            >
+              Print Label
+            </Button>
+          </div>
+          
+          <div className="p-6 bg-white rounded-lg shadow">
+            <h2 className="text-lg font-semibold mb-4">Assign Storage Location</h2>
+            <p className="text-sm text-gray-600 mb-4">Click on an empty storage location to assign this customer.</p>
+            <StorageMap selectedCustomer={savedCustomer} />
+          </div>
         </div>
       )}
     </div>

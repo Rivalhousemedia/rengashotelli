@@ -72,6 +72,7 @@ export default function StorageMap({ selectedCustomer }: { selectedCustomer?: Cu
                 {shelves.map((shelf) => {
                   const customer = getCustomerAtLocation(hotel, section, shelf);
                   const isSelected = selectedCustomer?.id === customer?.id;
+                  const locationCode = formatLocationCode(hotel, section, shelf);
                   return (
                     <div
                       key={shelf}
@@ -85,7 +86,7 @@ export default function StorageMap({ selectedCustomer }: { selectedCustomer?: Cu
                       }`}
                     >
                       <div className="text-sm">
-                        <div>{formatLocationCode(hotel, section, shelf)}</div>
+                        <div>{locationCode}</div>
                         {customer ? (
                           <div className="font-medium text-blue-600">{customer.licensePlate}</div>
                         ) : (
