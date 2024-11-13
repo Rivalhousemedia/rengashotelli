@@ -39,9 +39,15 @@ export default function StorageShelf({
         <html>
           <head>
             <title>Customer QR Code</title>
+            <style>
+              @media print {
+                body { margin: 0; }
+                .print-content { padding: 20px; }
+              }
+            </style>
           </head>
           <body>
-            <div id="print-content"></div>
+            <div class="print-content"></div>
           </body>
         </html>
       `);
@@ -49,11 +55,14 @@ export default function StorageShelf({
       const content = document.createElement('div');
       content.innerHTML = `
         <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
-          ${document.getElementById(`customer-qr-${customer.id}`)?.innerHTML}
+          ${document.getElementById(`customer-qr-${customer.id}`)?.innerHTML || ''}
         </div>
       `;
       
-      printWindow.document.getElementById('print-content')?.appendChild(content);
+      const printContent = printWindow.document.querySelector('.print-content');
+      if (printContent) {
+        printContent.appendChild(content);
+      }
       printWindow.document.close();
       printWindow.focus();
       printWindow.print();
