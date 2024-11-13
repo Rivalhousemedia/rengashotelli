@@ -30,7 +30,13 @@ export default function SearchBar() {
   const formatLocationCode = (customer: Customer) => {
     if (!customer.storageLocation) return 'Not assigned';
     const { hotel, section, shelf } = customer.storageLocation;
-    return `H${hotel}-${section}-${shelf}`;
+    // Convert values to string and check if they exist
+    const hotelStr = hotel?.toString();
+    const sectionStr = section?.toString();
+    const shelfStr = shelf?.toString();
+    
+    if (!hotelStr || !sectionStr || !shelfStr) return 'Not assigned';
+    return `H${hotelStr}-${sectionStr}-${shelfStr}`;
   };
 
   return (
