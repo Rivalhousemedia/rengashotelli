@@ -8,7 +8,8 @@ CREATE TABLE customers (
   winter_tire_size TEXT NOT NULL,
   phone TEXT NOT NULL,
   email TEXT NOT NULL,
-  status TEXT NOT NULL DEFAULT 'active'
+  status TEXT NOT NULL DEFAULT 'active',
+  storage_location_id UUID UNIQUE
 );
 
 -- Create storage_locations table
@@ -22,6 +23,12 @@ CREATE TABLE storage_locations (
   position INTEGER NOT NULL,
   customer_id UUID UNIQUE REFERENCES customers(id)
 );
+
+-- Add foreign key constraint
+ALTER TABLE customers 
+ADD CONSTRAINT fk_storage_location 
+FOREIGN KEY (storage_location_id) 
+REFERENCES storage_locations(id);
 
 -- Add indexes for better query performance
 CREATE INDEX idx_customers_name ON customers(name);

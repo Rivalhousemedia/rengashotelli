@@ -32,7 +32,16 @@ export async function createCustomer(customer: Omit<Customer, 'id' | 'created_at
 export async function searchCustomers(query: string) {
   const { data, error } = await supabase
     .from('customers')
-    .select('*')
+    .select(`
+      *,
+      storage_locations (
+        hotel,
+        section,
+        shelf,
+        level,
+        position
+      )
+    `)
     .or(`name.ilike.%${query}%,license_plate.ilike.%${query}%`)
     .limit(10)
 
@@ -50,6 +59,13 @@ export async function searchCustomers(query: string) {
     phone: customer.phone,
     email: customer.email,
     status: customer.status as 'active' | 'interim' | 'inactive',
+    storageLocation: customer.storage_locations ? {
+      hotel: customer.storage_locations.hotel,
+      section: customer.storage_locations.section,
+      shelf: customer.storage_locations.shelf,
+      level: customer.storage_locations.level,
+      position: customer.storage_locations.position,
+    } : undefined
   }))
 }
 
@@ -92,21 +108,41 @@ export async function getCustomersWithLocations() {
   }));
 }
 
-export async function updateStorageLocation(
+export async function assignStorageLocation(
   customerId: string,
-  location: Omit<StorageLocation, 'id' | 'created_at' | 'customer_id'>
+  location: Omit<StorageLocation, 'id' | 'created_at'>
 ) {
-  const { data, error } = await supabase
+  // First create the storage location
+  const { data: locationData, error: locationError } = await supabase
     .from('storage_locations')
-    .upsert({
-      customer_id: customerId,
-      ...location,
-    })
+    .insert([{
+      hotel: location.hotel,
+      section: location.section,
+      shelf: location.shelf,
+      level: location.level,
+      position: location.position,
+      customer_id: customerId
+    }])
     .select()
-    .single()
+    .single();
 
-  if (error) throw error
-  return data
+  if (locationError) {
+    console.error('Error creating storage location:', locationError);
+    throw locationError;
+  }
+
+  // Then update the customer with the storage location ID
+  const { error: customerError } = await supabase
+    .from('customers')
+    .update({ storage_location_id: locationData.id })
+    .eq('id', customerId);
+
+  if (customerError) {
+    console.error('Error updating customer:', customerError);
+    throw customerError;
+  }
+
+  return locationData;
 }
 
 export async function getCustomerLocation(customerId: string) {
