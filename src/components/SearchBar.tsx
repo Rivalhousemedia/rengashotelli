@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import { useState } from "react";
-import { searchCustomers } from "@/lib/supabase";
+import { searchCustomers } from "@/lib/api/customerApi";
 import { Card, CardContent } from "@/components/ui/card";
 import { Customer } from "@/lib/types";
 
@@ -19,23 +19,18 @@ export default function SearchBar() {
     setIsSearching(true);
     try {
       const results = await searchCustomers(query);
-      // Transform the results to match the Customer type
-      const transformedResults: Customer[] = results.map(result => ({
-        id: result.id,
-        name: result.name,
-        licensePlate: result.licensePlate,
-        summerTireSize: result.summerTireSize || '',
-        winterTireSize: result.winterTireSize || '',
-        phone: result.phone || '',
-        email: result.email || '',
-        status: 'active',
-      }));
-      setSearchResults(transformedResults);
+      setSearchResults(results);
     } catch (error) {
       console.error('Search error:', error);
     } finally {
       setIsSearching(false);
     }
+  };
+
+  const formatLocationCode = (customer: Customer) => {
+    if (!customer.storageLocation) return 'Not assigned';
+    const { hotel, section, shelf } = customer.storageLocation;
+    return `H${hotel}-${section}-${shelf}`;
   };
 
   return (
@@ -67,6 +62,8 @@ export default function SearchBar() {
                   Summer Tire Size: {customer.summerTireSize}
                   <br />
                   Winter Tire Size: {customer.winterTireSize}
+                  <br />
+                  Location: {formatLocationCode(customer)}
                 </div>
               </div>
             </CardContent>
